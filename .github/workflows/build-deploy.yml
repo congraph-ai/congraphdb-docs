@@ -34,6 +34,9 @@ jobs:
           pip install -r requirements.txt
           npm install --legacy-peer-deps || true
 
+      - name: Make scripts executable
+        run: chmod +x scripts/*.sh
+
       - name: Sync API docs from main repo
         run: ./scripts/sync-api-docs.sh || true
         env:
