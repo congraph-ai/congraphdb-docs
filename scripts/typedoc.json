@@ -1,0 +1,27 @@
+{
+  "entryPointStrategy": "expand",
+  "out": "docs/api/javascript",
+  "theme": "markdown",
+  "plugin": ["typedoc-plugin-markdown"],
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "hideGenerator": true,
+  "readme": "none",
+  "displayName": "CongraphDB JavaScript API",
+  "categorizeByGroup": true,
+  "sort": ["source-order"],
+  "kindSortOrder": [
+    "Module",
+    "Namespace",
+    "Enum",
+    "EnumMember",
+    "Class",
+    "Interface",
+    "TypeAlias",
+    "Constructor",
+    "Property",
+    "Method",
+    "Function",
+    "Variable"
+  ]
+}

@@ -1,0 +1,138 @@
+site_name: CongraphDB Documentation
+site_description: A high-performance, embedded graph database for Node.js built with Rust
+site_author: CongraphDB Contributors
+site_url: https://congraph-ai.github.io/congraphdb-docs/
+
+repo_name: congraph-ai/congraphdb
+repo_url: https://github.com/congraph-ai/congraphdb
+
+theme:
+  name: material
+  language: en
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.tabs.link
+    - toc.follow
+    - announce.dismiss
+  icon:
+    repo: fontawesome/brands/github
+    logo: material/graph
+
+plugins:
+  - search
+  - blog:
+      blog_dir: blog
+      post_date_format: MMMM DD, YYYY
+  - git-revision-date-localized:
+      type: iso_datetime
+      enable_creation_date: true
+  - mike:
+      version_selector: true
+      css_version: true
+      redirect_template: null
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - attr_list
+  - md_in_html
+  - footnotes
+  - toc:
+      permalink: true
+
+nav:
+  - Home:
+    - index.md
+  - User Guide:
+    - guide/index.md
+    - Installation: guide/installation.md
+    - Quick Start: guide/quick-start.md
+    - Schemas: guide/schemas.md
+    - Queries: guide/queries.md
+    - Transactions: guide/transactions.md
+    - Vector Search: guide/vector-search.md
+    - Performance: guide/performance.md
+    - Deployment: guide/deployment.md
+  - API Reference:
+    - api/index.md
+    - JavaScript API: api/javascript.md
+    - Rust API: api/rust.md
+    - Cypher Reference: api/cypher.md
+  - Internals:
+    - internals/index.md
+    - Architecture: internals/architecture.md
+    - Storage Format: internals/storage-format.md
+    - Query Execution: internals/query-execution.md
+    - Transaction Log: internals/transaction-log.md
+    - Index Structures: internals/index-structures.md
+    - Contributing: internals/contributing.md
+  - Operators:
+    - operators/index.md
+    - Comparison: operators/comparison.md
+    - Logical: operators/logical.md
+    - Arithmetic: operators/arithmetic.md
+    - String: operators/string.md
+    - List: operators/list.md
+  - Releases:
+    - releases/index.md
+    - Changelog: releases/changelog.md
+    - Migration Guide: releases/migration.md
+  - Blog:
+    - blog/index.md
+
+extra:
+  version:
+    provider: mike
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/congraph-ai/congraphdb
+    - icon: fontawesome/brands/npm
+      link: https://www.npmjs.com/package/@congraph-ai/congraphdb
+  analytics:
+    feedback:
+      title: Was this helpful?
+      ratings:
+        - icon: material/emoticon-happy-outline
+          name: This page was helpful
+          data: 1
+          note: Thanks for the feedback!
+        - icon: material/emoticon-sad-outline
+          name: This page could be improved
+          data: 0
+          note: Thanks for your feedback! Help us improve this page by
+            <a href="https://github.com/congraph-ai/congraphdb-docs/issues/new?title=[Feedback]+{title}+-+{url}" target="_blank" rel="noopener">opening an issue</a>.

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+<meta property="og:title" content="CongraphDB Documentation" />
+<meta property="og:description" content="A high-performance, embedded graph database for Node.js built with Rust" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://congraph-ai.github.io/congraphdb-docs/" />
+<meta property="og:image" content="https://congraph-ai.github.io/congraphdb-docs/images/og-image.png" />
+<meta name="twitter:card" content="summary_large_image" />
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+  // Custom JavaScript for home page
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,72 @@
+/* Custom styles for CongraphDB documentation */
+
+/* Adjust header spacing */
+.md-header {
+  background-color: var(--md-primary-fg-color);
+}
+
+/* Custom code block styling */
+.md-typeset pre {
+  border-radius: 0.5rem;
+}
+
+/* Adjust sidebar width */
+.md-sidebar {
+  width: 15rem;
+}
+
+/* Custom admonition colors */
+:root {
+  --md-admonition-icon--note: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>');
+}
+
+/* Version selector styling */
+.md-version__current {
+  font-weight: bold;
+}
+
+/* Custom color palette adjustments */
+:root > * {
+  --md-primary-fg-color: #3f51b5;
+  --md-primary-fg-color--dark: #303f9f;
+  --md-accent-fg-color: #536dfe;
+}
+
+/* Footer adjustments */
+.md-footer-meta {
+  background-color: var(--md-default-bg-color);
+}
+
+/* Table of contents improvements */
+.md-nav__link--active {
+  font-weight: 600;
+}
+
+/* Code copy button positioning */
+.md-typeset .highlight {
+  position: relative;
+}
+
+/* Blog post styling */
+.md-typeset .blog-post {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.md-typeset .blog-post h2 {
+  margin-top: 0;
+}
+
+.md-typeset .blog-meta {
+  color: var(--md-default-fg-color--light);
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 76.25em) {
+  .md-sidebar {
+    display: none;
+  }
+}

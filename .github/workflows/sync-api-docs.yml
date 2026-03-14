@@ -1,0 +1,33 @@
+name: Sync API Docs
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Daily at midnight
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout main repo
+        uses: actions/checkout@v4
+        with:
+          repository: congraph-ai/congraphdb
+          path: congraphdb-source
+          token: ${{ secrets.CONGRAPHDB_TOKEN }}
+
+      - name: Sync API docs
+        run: ./scripts/sync-api-docs.sh
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs/api/
+          git diff --quiet && git diff --staged --quiet || git commit -m "chore: sync API docs from main repo"
+          git push
