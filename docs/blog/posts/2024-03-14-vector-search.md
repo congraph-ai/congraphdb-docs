@@ -231,8 +231,8 @@ search('neural network training').then(console.log);
 
 ## Next Steps
 
-- [Vector Search Guide](../guide/vector-search.md) — More on vector search
-- [HNSW Internals](../internals/index-structures.md) — How HNSW works
-- [Performance Guide](../guide/performance.md) — Optimization tips
+- [Vector Search Guide](../../guide/vector-search.md) — More on vector search
+- [HNSW Internals](../../internals/index-structures.md) — How HNSW works
+- [Performance Guide](../../guide/performance.md) — Optimization tips
 
 Happy searching! :mag:

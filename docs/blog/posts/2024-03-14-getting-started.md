@@ -135,9 +135,9 @@ db.close();
 
 ## Next Steps
 
-- [Schemas Guide](../guide/schemas.md) — More on schema design
-- [Queries Guide](../guide/queries.md) — Advanced query patterns
-- [Vector Search](../guide/vector-search.md) — Semantic search
+- [Schemas Guide](../../guide/schemas.md) — More on schema design
+- [Queries Guide](../../guide/queries.md) — Advanced query patterns
+- [Vector Search](../../guide/vector-search.md) — Semantic search
 
 ## Full Example
 

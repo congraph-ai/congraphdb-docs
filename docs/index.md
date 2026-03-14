@@ -66,7 +66,7 @@ db.close();
 
 - **[Installation Guide](guide/installation.md)** — Get started with CongraphDB
 - **[Quick Start](guide/quick-start.md)** — Learn the basics
-- **[API Reference](api/)** — Complete API documentation
+- **[API Reference](api/index.md)** — Complete API documentation
 - **[GitHub Repository](https://github.com/congraph-ai/congraphdb)** — Source code
 
 ## Status

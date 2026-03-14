@@ -258,4 +258,4 @@ ORDER BY friend_count DESC
 ## See Also
 
 - [Queries Guide](../guide/queries.md) — Query examples and patterns
-- [Operators](../operators/) — Detailed operator reference
+- [Operators](../operators/index.md) — Detailed operator reference

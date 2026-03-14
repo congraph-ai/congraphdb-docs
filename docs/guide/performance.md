@@ -207,4 +207,4 @@ console.log('Buffer hit rate:', stats.bufferHitRate);
 ## Next Steps
 
 - [Deployment](deployment.md) — Production deployment guide
-- [Internals](internals/) — Deep dive into architecture
+- [Internals](../internals/index.md) — Deep dive into architecture

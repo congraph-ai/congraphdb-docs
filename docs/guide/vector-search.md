@@ -170,4 +170,4 @@ async function semanticSearchExample() {
 ## Next Steps
 
 - [Performance](performance.md) — Optimization tips
-- [Internals](internals/index-structures.md) — How HNSW works
+- [Internals](../internals/index-structures.md) — How HNSW works

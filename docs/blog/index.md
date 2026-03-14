@@ -24,7 +24,6 @@ Learn how to use HNSW indexes for semantic search with embeddings.
 Stay updated with the latest CongraphDB news:
 
 - [GitHub Releases](https://github.com/congraph-ai/congraphdb/releases)
-- [RSS Feed](blog/feed.xml) — Coming soon
 
 ## Contributing
 

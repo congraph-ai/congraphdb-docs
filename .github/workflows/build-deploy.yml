@@ -32,7 +32,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          npm install
+          npm install --legacy-peer-deps || true
 
       - name: Sync API docs from main repo
         run: ./scripts/sync-api-docs.sh || true

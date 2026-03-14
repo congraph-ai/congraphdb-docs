@@ -50,9 +50,9 @@ plugins:
   - git-revision-date-localized:
       type: iso_datetime
       enable_creation_date: true
+      enable_git_follow: false
   - mike:
       version_selector: true
-      css_version: true
       redirect_template: null
 
 markdown_extensions:

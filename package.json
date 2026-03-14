@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Documentation for CongraphDB",
   "devDependencies": {
-    "typedoc": "^0.26.0",
-    "typedoc-plugin-markdown": "^4.2.0"
+    "typedoc": "^0.28.0",
+    "typedoc-plugin-markdown": "^4.10.0"
   },
   "scripts": {
     "generate-api": "node scripts/generate-api.js"

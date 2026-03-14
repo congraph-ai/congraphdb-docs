@@ -261,5 +261,5 @@ console.log('Storage version:', storageVersion);
 
 ## Next Steps
 
-- [Internals](../internals/) — Deep dive into architecture
-- [API Reference](../api/) — Complete API documentation
+- [Internals](../internals/index.md) — Deep dive into architecture
+- [API Reference](../api/index.md) — Complete API documentation
