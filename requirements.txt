@@ -4,4 +4,4 @@ mkdocs-git-revision-date-localized-plugin>=1.2.0
 mike>=2.1.0
 markdown>=3.6.0
 pymdown-extensions>=10.9.0
-mkdocs-blog-plugin>=2.2.0
+mkdocs-blog-plugin>=0.25
