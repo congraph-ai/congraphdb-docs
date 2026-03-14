@@ -1,6 +1,6 @@
 # CongraphDB Documentation
 
-Official documentation for [CongraphDB](https://github.com/congraph-ai/congraphdb) — A high-performance, embedded graph database for Node.js built with Rust.
+Official documentation for [CongraphDB](https://github.com/congraph-ai/congraphdb) — A high-performance, embedded graph database for Node.js built with Rust
 
 ## Quick Start
 
