@@ -4,6 +4,17 @@
 
 CongraphDB is an embedded, serverless graph database designed for local-first applications. Built with Rust for memory safety and extreme performance, it provides a native Node.js bindings layer via napi-rs.
 
+## What's New in v0.1.3
+
+- **Path Finding** — `shortestPath()` and `allShortestPaths()` functions with configurable max length
+- **Pattern Comprehensions** — Extract collections from graph patterns with outer variable scope
+- **Temporal Types** — Date, DateTime, Duration support with temporal functions
+- **Multi-label Nodes** — Nodes can have multiple labels with `labels()` function
+- **Regex Matching** — Pattern matching with `=~` operator
+- **Map Literals** — Create maps with `{key: value, ...}` syntax
+
+See the [Changelog](releases/changelog.md) for full release notes.
+
 ## Quick Start
 
 ```bash

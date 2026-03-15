@@ -142,6 +142,242 @@ await conn.query(`
 `);
 ```
 
+## Pattern Comprehensions
+
+Pattern comprehensions allow you to create collections from patterns in your graph. They're useful for extracting related data into lists.
+
+### Single-Node Pattern Comprehensions
+
+```javascript
+// Collect names of all friends
+const result = await conn.query(`
+  MATCH (u:User {name: 'Alice'})
+  RETURN [(u)-[:KNOWS]->(f) | f.name] AS friend_names
+`);
+// Result: { friend_names: ['Bob', 'Charlie', 'David'] }
+```
+
+### Relationship Patterns
+
+```javascript
+// Collect friend names with additional filtering
+const result = await conn.query(`
+  MATCH (u:User {name: 'Alice'})
+  RETURN [(u)-[:KNOWS]->(f) WHERE f.age > 25 | f.name] AS older_friends
+`);
+// Result: { older_friends: ['Bob', 'Charlie'] }
+```
+
+### Multi-Hop Patterns
+
+```javascript
+// Collect friends of friends
+const result = await conn.query(`
+  MATCH (u:User {name: 'Alice'})
+  RETURN [(u)-[:KNOWS]->(f)-[:KNOWS]->(ff) | ff.name] AS friends_of_friends
+`);
+```
+
+### Outer Variable Scope
+
+Pattern comprehensions can reference variables from the outer query context:
+
+```javascript
+// Filter comprehension using outer variable
+const result = await conn.query(`
+  MATCH (u:User {name: 'Alice'})
+  WHERE u.age > 30
+  RETURN [(u)-[:KNOWS]->(f) WHERE f.age > u.age - 5 | f.name] AS peers
+`);
+```
+
+### Nested Comprehensions
+
+```javascript
+// Get friends with their friends
+const result = await conn.query(`
+  MATCH (u:User {name: 'Alice'})
+  RETURN [
+    (u)-[:KNOWS]->(f) |
+    { name: f.name, friends: [(f)-[:KNOWS]->(ff) | ff.name] }
+  ] AS social_network
+`);
+```
+
+## Temporal Types
+
+CongraphDB supports temporal types for working with dates and times.
+
+### Date Type
+
+```javascript
+// Create a date
+const result = await conn.query(`
+  RETURN date('2024-03-15') AS today
+`);
+// Result: { today: '2024-03-15' }
+
+// Use in WHERE clause
+await conn.query(`
+  MATCH (e:Event)
+  WHERE e.date >= date('2024-01-01')
+  RETURN e.title
+`);
+```
+
+### DateTime Type
+
+```javascript
+// Current datetime
+const result = await conn.query(`
+  RETURN datetime() AS now
+`);
+
+// Parse datetime string
+const result = await conn.query(`
+  RETURN datetime('2024-03-15T10:30:00') AS meeting_time
+`);
+
+// Compare datetimes
+await conn.query(`
+  MATCH (o:Order)
+  WHERE o.created_at > datetime('2024-03-01T00:00:00')
+  RETURN o.id
+`);
+```
+
+### Duration Type
+
+```javascript
+// Parse duration
+const result = await conn.query(`
+  RETURN duration('P1DT2H30M') AS time_span
+`);
+// Result: 1 day, 2 hours, 30 minutes
+
+// Calculate duration between dates
+await conn.query(`
+  MATCH (u:User {name: 'Alice'})-[:KNOWS {since: date('2020-01-01')}]->(f:User)
+  RETURN duration.between(date('2020-01-01'), date()).years AS years_known
+`);
+```
+
+### Temporal Functions Reference
+
+| Function | Description | Example |
+|----------|-------------|---------|
+| `date(string)` | Parse or create date | `date('2024-03-15')` |
+| `datetime()` | Get current datetime | `datetime()` |
+| `datetime(string)` | Parse datetime string | `datetime('2024-03-15T10:30:00')` |
+| `timestamp()` | Unix timestamp in ms | `timestamp()` |
+| `duration(string)` | Parse ISO 8601 duration | `duration('P1D')` |
+
+## Map Literals
+
+Create maps (objects) directly in your queries:
+
+```javascript
+// Create a map literal
+const result = await conn.query(`
+  RETURN {name: 'Alice', age: 30, active: true} AS user_data
+`);
+// Result: { user_data: { name: 'Alice', age: 30, active: true } }
+
+// Use with pattern comprehensions
+const result = await conn.query(`
+  MATCH (u:User {name: 'Alice'})-[:KNOWS]->(f:User)
+  RETURN {
+    name: f.name,
+    age: f.age,
+    is_adult: f.age >= 18
+  } AS friend_info
+`);
+```
+
+## Multi-Label Nodes
+
+Nodes can have multiple labels for categorization:
+
+```javascript
+// Create node with multiple labels
+await conn.query(`
+  CREATE (u:User:Admin:Premium {name: 'Alice', role: 'admin'})
+`);
+
+// Query by multiple labels
+await conn.query(`
+  MATCH (u:User:Admin)
+  RETURN u.name
+`);
+
+// Get all labels for a node
+const result = await conn.query(`
+  MATCH (u:User {name: 'Alice'})
+  RETURN labels(u) AS all_labels
+`);
+// Result: { all_labels: ['User', 'Admin', 'Premium'] }
+
+// Filter by label presence
+await conn.query(`
+  MATCH (u)
+  WHERE 'Admin' IN labels(u)
+  RETURN u.name
+`);
+```
+
+## Path Finding Functions
+
+### shortestPath()
+
+Find the shortest path between two nodes:
+
+```javascript
+// Basic shortest path
+const result = await conn.query(`
+  MATCH p = shortestPath(
+    (alice:User {name: 'Alice'})-[:KNOWS*]-(bob:User {name: 'Bob'})
+  )
+  RETURN [node IN nodes(p) | node.name] AS path
+`);
+// Result: { path: ['Alice', 'Charlie', 'Bob'] }
+
+// Limit path length
+const result = await conn.query(`
+  MATCH p = shortestPath(
+    (alice:User {name: 'Alice'})-[:KNOWS*..5]-(bob:User {name: 'Bob'})
+  )
+  RETURN length(p) AS hops, [node IN nodes(p) | node.name] AS path
+`);
+```
+
+### allShortestPaths()
+
+Find all shortest paths at minimum length:
+
+```javascript
+// Find all shortest paths
+const result = await conn.query(`
+  MATCH p = allShortestPaths(
+    (alice:User {name: 'Alice'})-[:KNOWS*..3]-(bob:User {name: 'Bob'})
+  )
+  RETURN [node IN nodes(p) | node.name] AS path
+`);
+// Returns multiple rows, one for each shortest path
+```
+
+### Relationship Directions
+
+```javascript
+// Outgoing only
+MATCH p = shortestPath((a)-[:FOLLOWS*]->(b))
+
+// Incoming only
+MATCH p = shortestPath((a)<-[:FOLLOWS*]-(b))
+
+// Undirected (any direction)
+MATCH p = shortestPath((a)-[:KNOWS*]-(b))
+```
+
 ## Complete Examples
 
 ### Social Network Query

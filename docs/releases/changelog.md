@@ -5,6 +5,74 @@ All notable changes to CongraphDB will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4] - 2026-03-15
+
+### Added
+- Complete **Pattern Comprehensions** documentation in queries guide
+- Complete **Temporal Types** documentation (Date, DateTime, Duration)
+- Complete **Multi-label Nodes** documentation
+- Complete **Map Literals** documentation
+- Enhanced **Path Finding Functions** documentation
+- Added temporal functions to Cypher reference
+- Added node and label functions to Cypher reference
+- Added pattern comprehensions and map literals to patterns section
+- Added "What's New in v0.1.3" section to index page
+
+### Changed
+- Synchronized documentation with congraphdb v0.1.3 and v0.1.4 features
+
+## [1.0.3] - 2026-03-15
+
+### Changed
+- Documentation updated for CongraphDB v0.1.4
+
+### Fixed
+- Updated changelog with v0.1.3 feature details
+- Fixed GitHub Actions artifact naming conflict (main repo)
+
+## [1.0.2] - 2026-03-15
+
+### Added
+- **Path finding functions** documentation
+  - `shortestPath()` - Find the shortest path between two nodes
+  - `allShortestPaths()` - Find all shortest paths at minimum length
+  - Configurable max path length with `[*..n]` syntax
+  - Support for all relationship directions (Outgoing, Incoming, Undirected)
+- **Pattern comprehensions** documentation
+  - Single-node patterns: `[(n:Label) | n.prop]`
+  - Relationship patterns: `[(a)-[:REL]->(b) | b.prop]`
+  - Multi-hop patterns: `[(a)-[:KNOWS]->(b)-[:FOLLOWS]->(c) | c]`
+  - WHERE clause support within comprehensions
+  - Outer variable scope - reference variables from outer query context
+- **Temporal types** documentation
+  - `Date` type for calendar dates (year, month, day)
+  - `DateTime` type for timestamps (milliseconds since epoch)
+  - `Duration` type for time spans
+  - `date()` function - Parse or create date values
+  - `datetime()` function - Get current datetime or parse datetime strings
+  - `timestamp()` function - Get current Unix timestamp in milliseconds
+  - `duration()` function - Parse ISO 8601 duration strings
+- **Multi-label nodes** documentation
+  - Nodes can have multiple labels: `(u:User:Admin:Premium)`
+  - `labels()` function returns all labels as a list
+  - `has_label()`, `add_label()`, `remove_label()` methods on NodeValue
+- **Map literals** documentation
+  - Create maps with `{key: value, ...}` syntax
+  - Support for arbitrary key-value pairs
+- **PathValue** type documentation
+  - Contains ordered nodes and relationships
+  - `length()`, `node_count()`, `start_node()`, `end_node()` methods
+  - Support for single-node paths (path from node to itself)
+
+### Changed
+- Synchronized version with main library release v0.1.3
+
+## [1.0.1] - 2026-03-15
+
+### Changed
+- Documentation updated for CongraphDB v0.1.3.1
+- Synchronized version with main library release
+
 ## [Unreleased]
 
 ### Added

@@ -116,6 +116,70 @@ SET u:Active
 
 ## Functions
 
+### Temporal
+
+| Function | Description |
+|----------|-------------|
+| `date(string)` | Parse or create a date value |
+| `datetime()` | Get current datetime |
+| `datetime(string)` | Parse datetime string |
+| `timestamp()` | Unix timestamp in milliseconds |
+| `duration(string)` | Parse ISO 8601 duration |
+| `duration.between(start, end)` | Calculate duration between two dates |
+
+**Temporal examples:**
+
+```cypher
+-- Create dates
+RETURN date('2024-03-15') AS today
+
+-- Current datetime
+RETURN datetime() AS now
+
+-- Timestamp
+RETURN timestamp() AS epoch_ms
+
+-- Duration calculation
+MATCH (u:User {name: 'Alice'})-[:KNOWS {since: date('2020-01-01')}]->(f:User)
+RETURN duration.between(date('2020-01-01'), date()).years AS years_known
+```
+
+### Node and Label
+
+| Function | Description |
+|----------|-------------|
+| `labels(node)` | Get all labels for a node |
+| `has_label(node, label)` | Check if node has a specific label |
+
+**Label examples:**
+
+```cypher
+-- Get all labels
+MATCH (u:User {name: 'Alice'})
+RETURN labels(u) AS all_labels
+
+-- Filter by label presence
+MATCH (u)
+WHERE 'Admin' IN labels(u)
+RETURN u.name
+
+-- Multi-label node matching
+MATCH (u:User:Admin:Premium)
+RETURN u.name
+```
+
+### Path
+
+| Function | Description |
+|----------|-------------|
+| `shortestPath(pattern)` | Find shortest path between nodes |
+| `allShortestPaths(pattern)` | Find all shortest paths |
+| `length(path)` | Get path length |
+| `nodes(path)` | Get nodes in path |
+| `relationships(path)` | Get relationships in path |
+| `start_node(path)` | Get starting node |
+| `end_node(path)` | Get ending node |
+
 ### Aggregate
 
 | Function | Description |
@@ -169,6 +233,52 @@ SET u:Active
 
 ## Patterns
 
+### Pattern Comprehensions
+
+Create collections from graph patterns:
+
+```cypher
+-- Single-node comprehension
+MATCH (u:User)
+RETURN [(u)-[:FRIENDS_WITH]->(f) | f.name] AS friend_names
+
+-- Relationship pattern with WHERE clause
+MATCH (u:User)
+RETURN [(u)-[:FRIENDS_WITH]->(f) WHERE f.age > 25 | f.name] AS older_friends
+
+-- Multi-hop pattern comprehensions
+MATCH (u:User)
+RETURN [(u)-[:KNOWS]->(f)-[:FOLLOWS]->(ff) | ff.name] AS friends_of_friends
+
+-- Outer variable scope
+MATCH (u:User {name: 'Alice'})
+WHERE u.age > 30
+RETURN [(u)-[:KNOWS]->(f) WHERE f.age > u.age - 5 | f.name] AS peers
+```
+
+### Map Literals
+
+Create maps (objects) in queries:
+
+```cypher
+-- Simple map
+RETURN {name: 'Alice', age: 30, active: true} AS user_data
+
+-- Map with expressions
+MATCH (u:User)
+RETURN {name: u.name, is_adult: u.age >= 18} AS user_info
+
+-- Nested maps
+MATCH (u:User)-[:KNOWS]->(f:User)
+RETURN {
+  user: u.name,
+  friend: {
+    name: f.name,
+    age: f.age
+  }
+} AS relationship
+```
+
 ### Variable-Length Paths
 
 ```cypher
@@ -184,11 +294,39 @@ SET u:Active
 
 ### Shortest Path
 
+Find the shortest path between two nodes:
+
 ```cypher
+-- Basic shortest path
 MATCH p = shortestPath(
   (a:User {name: 'Alice'})-[:KNOWS*]-(b:User {name: 'Bob'})
 )
 RETURN p
+
+-- Limit path length
+MATCH p = shortestPath(
+  (a:User {name: 'Alice'})-[:KNOWS*..5]-(b:User {name: 'Bob'})
+)
+RETURN length(p) AS hops, [node IN nodes(p) | node.name] AS path
+
+-- Get all shortest paths at minimum length
+MATCH p = allShortestPaths(
+  (a:User {name: 'Alice'})-[:KNOWS*..3]-(b:User {name: 'Bob'})
+)
+RETURN [node IN nodes(p) | node.name] AS path
+```
+
+**Relationship directions:**
+
+```cypher
+-- Outgoing only
+MATCH p = shortestPath((a)-[:FOLLOWS*]->(b))
+
+-- Incoming only
+MATCH p = shortestPath((a)<-[:FOLLOWS*]-(b))
+
+-- Undirected (any direction)
+MATCH p = shortestPath((a)-[:KNOWS*]-(b))
 ```
 
 ### Optional Match
