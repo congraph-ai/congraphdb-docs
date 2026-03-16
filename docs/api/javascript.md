@@ -2,6 +2,8 @@
 
 Complete API reference for CongraphDB Node.js bindings.
 
+> **Note:** This manual API reference provides the most commonly used interfaces. For auto-generated TypeScript documentation from the source type definitions, see the [TypeScript API Documentation](./javascript/).
+
 ## Database
 
 The main class for working with CongraphDB databases.
