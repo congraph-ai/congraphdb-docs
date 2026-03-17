@@ -2,9 +2,42 @@
 
 Complete API reference for CongraphDB Node.js bindings.
 
-> **Note:** This manual API reference provides the most commonly used interfaces. For auto-generated TypeScript documentation from the source type definitions, see the [TypeScript API Documentation](./javascript/).
+CongraphDB provides **three ways to query your graph**:
 
-## Database
+1. **Cypher Query Language** - Industry-standard graph query language
+2. **JavaScript Native API** - Programmatic CRUD operations (CongraphDBAPI)
+3. **Navigator API** - Fluent graph traversal
+
+> **Note:** This page covers the native Database/Connection/QueryResult bindings. For the JavaScript Native API (CongraphDBAPI), see [JavaScript API Reference](./javascript-api.md). For guidance on choosing an interface, see [Choosing Your Query Interface](../guide/choosing-interface.md).
+
+---
+
+## Quick Interface Comparison
+
+```javascript
+// Option 1: Cypher Query Language
+const result = await conn.query(`
+  MATCH (u:User {name: 'Alice'})-[:KNOWS]->(f:User)
+  RETURN f.name
+`);
+
+// Option 2: JavaScript Native API
+const api = new CongraphDBAPI(db);
+const friends = await api.find({
+  subject: alice._id,
+  predicate: 'KNOWS',
+  object: api.v('friend')
+});
+
+// Option 3: Navigator API
+const friends = await api.nav(alice._id)
+  .out('KNOWS')
+  .values();
+```
+
+---
+
+## Native Database Classes
 
 The main class for working with CongraphDB databases.
 
@@ -358,5 +391,7 @@ interface QueryResult {
 
 ## See Also
 
+- [JavaScript API Reference](javascript-api.md) — CongraphDBAPI, Navigator, Pattern matching
 - [Cypher Reference](cypher.md) — Query language syntax
+- [Choosing Your Query Interface](../guide/choosing-interface.md) — Decision guide
 - [Transactions](../guide/transactions.md) — Using transactions

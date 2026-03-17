@@ -1,5 +1,17 @@
 # Queries
 
+CongraphDB provides **three ways to query your graph**:
+
+1. **Cypher Query Language** (below) - Industry-standard graph query language
+2. **JavaScript Native API** - Programmatic interface for CRUD operations
+3. **Navigator API** - Fluent graph traversal API
+
+This page covers the Cypher query language. For JavaScript API queries, see [JavaScript API Queries](#javascript-api-queries) below, or the [JavaScript API Reference](../api/javascript-api.md).
+
+---
+
+## Cypher Query Language
+
 CongraphDB uses **Cypher**, a graph query language that makes it easy to work with connected data.
 
 ## Basic Query Structure
@@ -442,6 +454,281 @@ console.log(result.getColumnDataTypes());  // ['STRING', 'INT64']
 // Always close when done
 result.close();
 ```
+
+---
+
+## JavaScript API Queries
+
+CongraphDB's JavaScript Native API provides a programmatic alternative to Cypher for many common operations. This is especially useful for:
+
+- Simple CRUD operations
+- Application-specific data access
+- Type safety with TypeScript
+- Developers who prefer method calls over query strings
+
+### CRUD Operations
+
+#### Create Nodes
+
+```javascript
+const { Database, CongraphDBAPI } = require('@congraph-ai/congraphdb');
+
+const db = new Database('./my-graph.cgraph');
+await db.init();
+const api = new CongraphDBAPI(db);
+
+// Create a node
+const alice = await api.createNode('User', {
+  name: 'Alice',
+  age: 30,
+  email: 'alice@example.com'
+});
+// Returns: { _id: '...', name: 'Alice', age: 30, email: '...' }
+```
+
+#### Create Relationships
+
+```javascript
+const bob = await api.createNode('User', {
+  name: 'Bob',
+  age: 25
+});
+
+await api.createEdge(alice._id, 'KNOWS', bob._id, {
+  since: 2020
+});
+```
+
+#### Read Nodes
+
+```javascript
+// Get by ID
+const node = await api.getNode(alice._id);
+
+// Get all nodes by label
+const users = await api.getNodesByLabel('User');
+```
+
+#### Update Nodes
+
+```javascript
+const updated = await api.updateNode(alice._id, {
+  age: 31,
+  lastSeen: Date.now()
+});
+```
+
+#### Delete Nodes
+
+```javascript
+// Delete without relationships
+await api.deleteNode(alice._id);
+
+// Delete with relationships (detach)
+await api.deleteNode(alice._id, true);
+```
+
+### Pattern Matching Queries
+
+The `find()` method provides declarative pattern matching similar to graph triple stores.
+
+#### Basic Pattern Matching
+
+```javascript
+// Find Alice's friends
+const friends = await api.find({
+  subject: alice._id,
+  predicate: 'KNOWS',
+  object: api.v('friend')
+});
+
+// Results: [{ friend: { name: 'Bob', age: 25, ... } }, ...]
+```
+
+#### Pattern with Variables
+
+```javascript
+// Find all KNOWS relationships
+const relationships = await api.find({
+  subject: api.v('person'),
+  predicate: 'KNOWS',
+  object: api.v('friend')
+});
+
+// Results: [
+//   { person: { name: 'Alice', ... }, friend: { name: 'Bob', ... } },
+//   ...
+// ]
+```
+
+#### Filtered Pattern Matching
+
+```javascript
+// Find friends over age 25
+const friends = await api.find({
+  subject: alice._id,
+  predicate: 'KNOWS',
+  object: api.v('friend')
+}, {
+  where: 'friend.age > 25'
+});
+```
+
+### Navigator Traversal Queries
+
+The Navigator API provides fluent chaining for graph traversal, ideal for multi-hop queries.
+
+#### One-Hop Traversal
+
+```javascript
+// Find Alice's friends
+const friends = await api.nav(alice._id)
+  .out('KNOWS')
+  .values();
+```
+
+#### Multi-Hop Traversal
+
+```javascript
+// Friends of friends
+const friendsOfFriends = await api.nav(alice._id)
+  .out('KNOWS')
+  .out('KNOWS')
+  .values();
+```
+
+#### Bidirectional Traversal
+
+```javascript
+// All connections (incoming and outgoing)
+const connections = await api.nav(alice._id)
+  .both('KNOWS')
+  .values();
+```
+
+#### Filtered Traversal
+
+```javascript
+// Friends in specific city
+const nycFriends = await api.nav(alice._id)
+  .out('KNOWS')
+  .where('city = "NYC"')
+  .values();
+
+// Or with JavaScript function
+const youngFriends = await api.nav(alice._id)
+  .out('KNOWS')
+  .where(f => f.age < 30)
+  .values();
+```
+
+#### Limited Results
+
+```javascript
+// First 5 friends
+const firstFive = await api.nav(alice._id)
+  .out('KNOWS')
+  .limit(5)
+  .values();
+```
+
+#### Counting Results
+
+```javascript
+// Count friends without retrieving all data
+const count = await api.nav(alice._id)
+  .out('KNOWS')
+  .count();
+```
+
+#### Path Finding
+
+```javascript
+// Find shortest path to Bob
+const path = await api.nav(alice._id)
+  .out('KNOWS')
+  .to(bob._id)
+  .values();
+```
+
+### Edge Queries
+
+```javascript
+// Get all edges from a node
+const outgoing = await api.getEdges({ from: alice._id });
+
+// Get all edges to a node
+const incoming = await api.getEdges({ to: alice._id });
+
+// Get edges by type
+const knowsEdges = await api.getEdges({ type: 'KNOWS' });
+
+// Combined filters
+const results = await api.getEdges({
+  from: alice._id,
+  type: 'KNOWS'
+});
+```
+
+### Transaction Queries
+
+```javascript
+await api.transaction(async (txApi) => {
+  const alice = await txApi.createNode('User', { name: 'Alice' });
+  const bob = await txApi.createNode('User', { name: 'Bob' });
+  await txApi.createEdge(alice._id, 'KNOWS', bob._id);
+  // All operations commit if no error is thrown
+});
+```
+
+### Async Iteration
+
+```javascript
+// Iterate over results
+for await (const friend of api.nav(alice._id).out('KNOWS')) {
+  console.log(friend.name);
+}
+```
+
+### Comparison: Cypher vs JavaScript API vs Navigator
+
+| Operation | Cypher | JavaScript API | Navigator |
+|-----------|--------|----------------|-----------|
+| **Find Alice's friends** | `MATCH (a:User {name: 'Alice'})-[:KNOWS]->(f) RETURN f` | `api.find({subject: alice._id, predicate: 'KNOWS', object: api.v('f')})` | `api.nav(alice._id).out('KNOWS').values()` |
+| **Friends of friends** | `MATCH (a)-[:KNOWS]->()-[:KNOWS]->(f) RETURN f` | Chain `find()` calls | `api.nav(id).out('KNOWS').out('KNOWS').values()` |
+| **Filter results** | `WHERE f.age > 25` | `where: 'f.age > 25'` | `.where(f => f.age > 25)` |
+| **Limit results** | `LIMIT 10` | Manual filtering | `.limit(10)` |
+| **Create node** | `CREATE (u:User {...})` | `api.createNode('User', {...})` | N/A |
+| **Delete node** | `DETACH DELETE u` | `api.deleteNode(id, true)` | N/A |
+| **Shortest path** | `shortestPath((a)-[*]-(b))` | Use Cypher | `.to(targetId).values()` |
+
+### When to Use Each Interface
+
+**Use Cypher for:**
+- Complex multi-hop queries with conditions
+- Aggregations and analytics
+- Pattern comprehensions
+- Complex filtering and sorting
+
+**Use JavaScript API (find) for:**
+- Simple pattern matching
+- When you need variable binding
+- Programmatic query building
+
+**Use Navigator for:**
+- Multi-hop traversals
+- Fluent chaining
+- Path finding
+- When code readability is important
+
+**Use JavaScript API (CRUD) for:**
+- Create, read, update, delete operations
+- Application-specific data access
+- When you want type safety
+
+For a detailed decision guide, see [Choosing Your Query Interface](choosing-interface.md).
+
+---
 
 ## Next Steps
 

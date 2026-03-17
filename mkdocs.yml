@@ -82,15 +82,20 @@ nav:
     - guide/index.md
     - Installation: guide/installation.md
     - Quick Start: guide/quick-start.md
+    - Choosing an Interface: guide/choosing-interface.md
     - Schemas: guide/schemas.md
     - Queries: guide/queries.md
     - Transactions: guide/transactions.md
     - Vector Search: guide/vector-search.md
     - Performance: guide/performance.md
+    - Performance Comparison: guide/performance-comparison.md
     - Deployment: guide/deployment.md
+    - Migrating from Neo4j: guide/migrating-from-neo4j.md
+    - Migrating from LevelGraph: guide/migrating-from-levelgraph.md
   - API Reference:
     - api/index.md
-    - JavaScript API: api/javascript.md
+    - JavaScript Native API: api/javascript-api.md
+    - JavaScript Bindings: api/javascript.md
     - Rust API: api/rust.md
     - Cypher Reference: api/cypher.md
   - Internals:
