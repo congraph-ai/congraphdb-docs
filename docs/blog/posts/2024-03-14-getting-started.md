@@ -21,13 +21,13 @@ A simple social network with:
 First, install CongraphDB:
 
 ```bash
-npm install @congraph-ai/congraphdb
+npm install congraphdb
 ```
 
 ## Creating the Database
 
 ```javascript
-const { Database } = require('@congraph-ai/congraphdb');
+const { Database } = require('congraphdb');
 
 const db = new Database('./social-network.cgraph');
 db.init();
@@ -142,7 +142,7 @@ db.close();
 ## Full Example
 
 ```javascript
-const { Database } = require('@congraph-ai/congraphdb');
+const { Database } = require('congraphdb');
 
 async function main() {
   const db = new Database('./social-network.cgraph');

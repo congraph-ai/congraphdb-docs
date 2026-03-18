@@ -119,7 +119,7 @@ async function syncReplica() {
 ### AWS Lambda
 
 ```javascript
-const { Database } = require('@congraph-ai/congraphdb');
+const { Database } = require('congraphdb');
 const path = require('path');
 
 // Lambda persistence layer

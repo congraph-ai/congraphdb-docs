@@ -90,7 +90,7 @@ await conn.query(`
 ## Complete Example
 
 ```javascript
-const { Database } = require('@congraph-ai/congraphdb');
+const { Database } = require('congraphdb');
 
 async function semanticSearchExample() {
   const db = new Database('./semantic-search.cgraph');

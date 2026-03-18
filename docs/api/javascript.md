@@ -292,7 +292,7 @@ console.log(types);  // ['STRING', 'INT64']
 ### Basic Query
 
 ```javascript
-const { Database } = require('@congraph-ai/congraphdb');
+const { Database } = require('congraphdb');
 
 const db = new Database('./my-graph.cgraph');
 db.init();

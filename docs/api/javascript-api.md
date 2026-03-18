@@ -11,7 +11,7 @@ CongraphDB provides a **JavaScript-native API** as an alternative to Cypher for 
 ## Quick Start
 
 ```javascript
-const { Database, CongraphDBAPI } = require('@congraph-ai/congraphdb');
+const { Database, CongraphDBAPI } = require('congraphdb');
 
 // Initialize
 const db = new Database('./my-graph.cgraph');

@@ -88,5 +88,5 @@ MIT License — see [LICENSE](LICENSE) file for details.
 ## Links
 
 - **Main Repository**: [congraph-ai/congraphdb](https://github.com/congraph-ai/congraphdb)
-- **npm Package**: [@congraph-ai/congraphdb](https://www.npmjs.com/package/@congraph-ai/congraphdb)
+- **npm Package**: [congraphdb](https://www.npmjs.com/package/congraphdb)
 - **Documentation**: [congraph-ai.github.io/congraphdb-docs](https://congraph-ai.github.io/congraphdb-docs/)

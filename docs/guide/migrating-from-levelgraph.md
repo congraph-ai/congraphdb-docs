@@ -27,11 +27,11 @@ const db = levelgraph('./my-graph');
 
 ### CongraphDB
 ```javascript
-npm install @congraph-ai/congraphdb
+npm install congraphdb
 ```
 
 ```javascript
-const { Database, CongraphDBAPI } = require('@congraph-ai/congraphdb');
+const { Database, CongraphDBAPI } = require('congraphdb');
 const db = new Database('./my-graph.cgraph');
 await db.init();
 const api = new CongraphDBAPI(db);
@@ -166,7 +166,7 @@ db.put([
 
 #### CongraphDB Navigator
 ```javascript
-const { Database, CongraphDBAPI } = require('@congraph-ai/congraphdb');
+const { Database, CongraphDBAPI } = require('congraphdb');
 
 const db = new Database('./social.cgraph');
 await db.init();

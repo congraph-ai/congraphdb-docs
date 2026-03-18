@@ -104,7 +104,7 @@ db.checkpoint();
 ## Complete Example
 
 ```javascript
-const { Database } = require('@congraph-ai/congraphdb');
+const { Database } = require('congraphdb');
 
 async function transferFriendship(fromUser, toUser, newFriend) {
   const db = new Database('./social-graph.cgraph');

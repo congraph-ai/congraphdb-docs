@@ -93,7 +93,7 @@ await conn.query(`
 ## Complete Example
 
 ```javascript
-const { Database } = require('@congraph-ai/congraphdb');
+const { Database } = require('congraphdb');
 
 async function main() {
   const db = new Database('./social-graph.cgraph');

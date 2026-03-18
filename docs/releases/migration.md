@@ -25,7 +25,7 @@ None. 0.1.x is backward compatible with 0.0.x.
 
 2. **Update package**:
    ```bash
-   npm update @congraph-ai/congraphdb
+   npm update congraphdb
    ```
 
 3. **Test your application**:
@@ -98,7 +98,7 @@ If you need to rollback:
    ```
 3. **Reinstall previous version**:
    ```bash
-   npm install @congraph-ai/congraphdb@0.1.0
+   npm install congraphdb@0.1.0
    ```
 4. **Restart application**
 

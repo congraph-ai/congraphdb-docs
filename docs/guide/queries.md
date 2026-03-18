@@ -471,7 +471,7 @@ CongraphDB's JavaScript Native API provides a programmatic alternative to Cypher
 #### Create Nodes
 
 ```javascript
-const { Database, CongraphDBAPI } = require('@congraph-ai/congraphdb');
+const { Database, CongraphDBAPI } = require('congraphdb');
 
 const db = new Database('./my-graph.cgraph');
 await db.init();

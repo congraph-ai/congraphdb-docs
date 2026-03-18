@@ -16,13 +16,13 @@ Choose the approach that best fits your use case. See [Choosing Your Query Inter
 ### Step 1: Install CongraphDB
 
 ```bash
-npm install @congraph-ai/congraphdb
+npm install congraphdb
 ```
 
 ## Step 2: Create a Database
 
 ```javascript
-const { Database } = require('@congraph-ai/congraphdb');
+const { Database } = require('congraphdb');
 
 // Create or open a database
 const db = new Database('./my-graph.cgraph');
@@ -94,7 +94,7 @@ db.close();
 ## Complete Example (Cypher)
 
 ```javascript
-const { Database } = require('@congraph-ai/congraphdb');
+const { Database } = require('congraphdb');
 
 async function main() {
   const db = new Database('./my-graph.cgraph');
@@ -146,13 +146,13 @@ The JavaScript Native API provides a programmatic alternative to Cypher, ideal f
 ### Step 1: Install CongraphDB
 
 ```bash
-npm install @congraph-ai/congraphdb
+npm install congraphdb
 ```
 
 ### Step 2: Create a Database
 
 ```javascript
-const { Database, CongraphDBAPI } = require('@congraph-ai/congraphdb');
+const { Database, CongraphDBAPI } = require('congraphdb');
 
 // Create or open a database
 const db = new Database('./my-graph.cgraph');
@@ -236,7 +236,7 @@ await db.close();
 ### Complete Example (JavaScript API)
 
 ```javascript
-const { Database, CongraphDBAPI } = require('@congraph-ai/congraphdb');
+const { Database, CongraphDBAPI } = require('congraphdb');
 
 async function main() {
   const db = new Database('./my-graph.cgraph');

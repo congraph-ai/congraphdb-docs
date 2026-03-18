@@ -127,7 +127,7 @@ extra:
     - icon: fontawesome/brands/github
       link: https://github.com/congraph-ai/congraphdb
     - icon: fontawesome/brands/npm
-      link: https://www.npmjs.com/package/@congraph-ai/congraphdb
+      link: https://www.npmjs.com/package/congraphdb
   analytics:
     feedback:
       title: Was this helpful?

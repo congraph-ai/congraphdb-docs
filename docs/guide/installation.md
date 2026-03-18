@@ -18,13 +18,13 @@ CongraphDB is distributed as an npm package with prebuilt native binaries for mu
 ## Install via npm
 
 ```bash
-npm install @congraph-ai/congraphdb
+npm install congraphdb
 ```
 
 ## Install via yarn
 
 ```bash
-yarn add @congraph-ai/congraphdb
+yarn add congraphdb
 ```
 
 ## Verify Installation
@@ -32,7 +32,7 @@ yarn add @congraph-ai/congraphdb
 Create a test file `test.js`:
 
 ```javascript
-const { Database } = require('@congraph-ai/congraphdb');
+const { Database } = require('congraphdb');
 
 console.log('CongraphDB version:', Database.getVersion());
 ```

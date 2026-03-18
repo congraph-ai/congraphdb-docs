@@ -11,7 +11,7 @@ CongraphDB uses **Cypher**, the same query language as Neo4j, making migration f
 | **Storage** | Separate database files | Single `.cgraph` file |
 | **Driver** | Bolt protocol | Native Node.js bindings |
 | **Transactions** | `session.beginTransaction()` | `conn.beginTransaction()` |
-| **JavaScript Driver** | `neo4j-driver` | `@congraph-ai/congraphdb` |
+| **JavaScript Driver** | `neo4j-driver` | `congraphdb` |
 
 ## Installation Change
 
@@ -28,11 +28,11 @@ const session = driver.session();
 
 ### CongraphDB
 ```javascript
-npm install @congraph-ai/congraphdb
+npm install congraphdb
 ```
 
 ```javascript
-const { Database } = require('@congraph-ai/congraphdb');
+const { Database } = require('congraphdb');
 const db = new Database('./my-graph.cgraph');
 db.init();
 const conn = db.createConnection();
@@ -219,7 +219,7 @@ for (const user of neo4jUsers) {
 
 ```javascript
 // Using JavaScript API for faster imports
-const { Database, CongraphDBAPI } = require('@congraph-ai/congraphdb');
+const { Database, CongraphDBAPI } = require('congraphdb');
 
 const db = new Database('./imported-graph.cgraph');
 await db.init();
@@ -379,7 +379,7 @@ async function handleRequest() {
 CongraphDB provides a JavaScript Native API that Neo4j doesn't have:
 
 ```javascript
-const { Database, CongraphDBAPI } = require('@congraph-ai/congraphdb');
+const { Database, CongraphDBAPI } = require('congraphdb');
 
 const db = new Database('./my-graph.cgraph');
 await db.init();
@@ -463,7 +463,7 @@ const result = await conn.query(`
 
 #### CongraphDB (Navigator - Cleaner)
 ```javascript
-const { CongraphDBAPI } = require('@congraph-ai/congraphdb');
+const { CongraphDBAPI } = require('congraphdb');
 const api = new CongraphDBAPI(db);
 
 const fof = await api.nav(userId)

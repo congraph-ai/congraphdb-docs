@@ -22,11 +22,11 @@ See the [Changelog](releases/changelog.md) for full release notes.
 ## Quick Start
 
 ```bash
-npm install @congraph-ai/congraphdb
+npm install congraphdb
 ```
 
 ```javascript
-const { Database } = require('@congraph-ai/congraphdb');
+const { Database } = require('congraphdb');
 
 // Create or open a database
 const db = new Database('./my-graph.cgraph');

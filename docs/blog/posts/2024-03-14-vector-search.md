@@ -26,13 +26,13 @@ Unlike keyword search, semantic search understands the *meaning* of text:
 ## Setup
 
 ```bash
-npm install @congraph-ai/congraphdb openai
+npm install congraphdb openai
 ```
 
 ## Create a Document Store
 
 ```javascript
-const { Database } = require('@congraph-ai/congraphdb');
+const { Database } = require('congraphdb');
 const OpenAI = require('openai');
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -194,7 +194,7 @@ LIMIT 10  // ef_runtime ≈ 10 * 10 = 100
 ## Complete Example
 
 ```javascript
-const { Database } = require('@congraph-ai/congraphdb');
+const { Database } = require('congraphdb');
 const OpenAI = require('openai');
 
 const openai = new OpenAI();
