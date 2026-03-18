@@ -4,14 +4,18 @@
 
 CongraphDB is an embedded, serverless graph database designed for local-first applications. Built with Rust for memory safety and extreme performance, it provides a native Node.js bindings layer via napi-rs.
 
-## What's New in v0.1.3
+## What's New in v0.1.5
 
-- **Path Finding** — `shortestPath()` and `allShortestPaths()` functions with configurable max length
-- **Pattern Comprehensions** — Extract collections from graph patterns with outer variable scope
-- **Temporal Types** — Date, DateTime, Duration support with temporal functions
-- **Multi-label Nodes** — Nodes can have multiple labels with `labels()` function
-- **Regex Matching** — Pattern matching with `=~` operator
-- **Map Literals** — Create maps with `{key: value, ...}` syntax
+- **Dual Query Interface** — Choose between Cypher Query Language OR JavaScript-Native API
+  - **Cypher**: Industry-standard graph query language for complex operations
+  - **JavaScript API**: Native methods with fluent Navigator API for simple CRUD
+  - **CongraphDBAPI class** — Complete NodeAPI, EdgeAPI, Pattern matching, and Navigator
+  - **TypeScript definitions** — Full type coverage for all API classes
+- **Complete DML Operations** — CREATE, SET, DELETE, REMOVE, MERGE with ON MATCH/ON CREATE
+- **Query Statistics** — Track execution time, row count, and query type
+- **Dynamic Properties** — Auto-create columns when setting non-existent properties
+- **Property Filters** — Property filters in MATCH patterns now work correctly
+- **CASE Expressions** — Full conditional logic support in queries
 
 See the [Changelog](releases/changelog.md) for full release notes.
 

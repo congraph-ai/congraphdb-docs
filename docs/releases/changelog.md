@@ -5,6 +5,23 @@ All notable changes to CongraphDB will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.5] - 2026-03-18
+
+### Added
+- **Dual Query Interface** documentation — Choose between Cypher Query Language OR JavaScript-Native API
+  - **CongraphDBAPI class** documentation with NodeAPI, EdgeAPI, Pattern, and Navigator
+  - **Navigator API** documentation for fluent graph traversal
+  - **TypeScript definitions** documentation
+- **Complete DML operations** documentation — CREATE, SET, DELETE, REMOVE, MERGE with ON MATCH/ON CREATE
+- **Query execution statistics** documentation — Track execution time, row count, and query type
+- **Dynamic property creation** documentation — Auto-create columns when setting non-existent properties
+- **Property filter handling** documentation — Property filters in MATCH patterns
+- **CASE expressions** documentation — Full conditional logic support in queries
+- Added "What's New in v0.1.5" section to index page
+
+### Changed
+- Synchronized documentation with congraphdb v0.1.5 features
+
 ## [1.0.4] - 2026-03-15
 
 ### Added
@@ -16,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added temporal functions to Cypher reference
 - Added node and label functions to Cypher reference
 - Added pattern comprehensions and map literals to patterns section
-- Added "What's New in v0.1.3" section to index page
+- Added "What's New in v0.1.5" section to index page
 
 ### Changed
 - Synchronized documentation with congraphdb v0.1.3 and v0.1.4 features
