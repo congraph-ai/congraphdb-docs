@@ -5,6 +5,15 @@ All notable changes to CongraphDB will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.6] - 2026-03-21
+
+### Added
+- **v0.1.6 synchronization** — Updated documentation for CongraphDB v0.1.6
+- Added "What's New in v0.1.6" section to index page
+
+### Changed
+- Updated version references from v0.1.5 to v0.1.6 across all documentation
+
 ## [1.0.5] - 2026-03-18
 
 ### Added

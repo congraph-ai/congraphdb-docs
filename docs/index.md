@@ -4,7 +4,7 @@
 
 CongraphDB is an embedded, serverless graph database designed for local-first applications. Built with Rust for memory safety and extreme performance, it provides a native Node.js bindings layer via napi-rs.
 
-## What's New in v0.1.5
+## What's New in v0.1.6
 
 - **Dual Query Interface** — Choose between Cypher Query Language OR JavaScript-Native API
   - **Cypher**: Industry-standard graph query language for complex operations

@@ -264,7 +264,7 @@ CongraphDB supports most commonly used Cypher features:
 | CASE expressions | ✅ | WHEN/THEN/ELSE |
 | Regex matching | ✅ | =~ operator |
 
-### Unsupported Features (as of v0.1.5)
+### Unsupported Features (as of v0.1.6)
 
 | Feature | Status | Alternative |
 |---------|--------|-------------|
@@ -308,7 +308,7 @@ const result = await session.run(`
 
 #### CongraphDB
 ```javascript
-// Note: Parameters not yet supported in v0.1.5
+// Note: Parameters not yet supported in v0.1.6
 // Use string interpolation or the JavaScript API
 const result = await conn.query(`
   MATCH (u:User {name: 'Alice'}) RETURN u
