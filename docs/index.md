@@ -4,18 +4,14 @@
 
 CongraphDB is an embedded, serverless graph database designed for local-first applications. Built with Rust for memory safety and extreme performance, it provides a native Node.js bindings layer via napi-rs.
 
-## What's New in v0.1.6
+## What's New in v0.1.7
 
-- **Dual Query Interface** — Choose between Cypher Query Language OR JavaScript-Native API
-  - **Cypher**: Industry-standard graph query language for complex operations
-  - **JavaScript API**: Native methods with fluent Navigator API for simple CRUD
-  - **CongraphDBAPI class** — Complete NodeAPI, EdgeAPI, Pattern matching, and Navigator
-  - **TypeScript definitions** — Full type coverage for all API classes
-- **Complete DML Operations** — CREATE, SET, DELETE, REMOVE, MERGE with ON MATCH/ON CREATE
-- **Query Statistics** — Track execution time, row count, and query type
-- **Dynamic Properties** — Auto-create columns when setting non-existent properties
-- **Property Filters** — Property filters in MATCH patterns now work correctly
-- **CASE Expressions** — Full conditional logic support in queries
+- **Query Result Modifiers** — ORDER BY with ASC/DESC, SKIP, and LIMIT clauses for result control
+- **Variable-Length Path Traversal** — `[*..n]` syntax for flexible path patterns
+- **Union Operator** — Combine results from multiple MATCH patterns
+- **Comprehensive TypeScript Definitions** — Complete index.d.ts for CongraphDB API
+- **Major Codebase Refactoring** — Improved modular structure (query binder, operators, N-API bindings)
+- **Bug Fixes** — Relationship RETURN, multi-node-table patterns, case-insensitive keywords, edge query compatibility
 
 See the [Changelog](releases/changelog.md) for full release notes.
 
@@ -87,7 +83,7 @@ db.close();
 
 ## Status
 
-CongraphDB is currently in **alpha** development (v0.1.6). The core storage engine, transaction system, and a robust Cypher/JavaScript query interface are implemented, with features like path finding, vector search, and DML operations fully supported.
+CongraphDB is currently in **alpha** development (v0.1.7). The core storage engine, transaction system, and a robust Cypher/JavaScript query interface are implemented, with features like path finding, vector search, DML operations, and query result modifiers fully supported.
 
 ## License
 
