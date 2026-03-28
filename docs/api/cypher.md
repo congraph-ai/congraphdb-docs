@@ -60,8 +60,36 @@ Update properties.
 
 ```cypher
 SET u.age = 31
-SET u.age = u.age + 1
 SET u:Active
+```
+
+### REMOVE
+
+Remove properties and labels from nodes and relationships.
+
+```cypher
+-- Remove properties
+MATCH (u:User {name: 'Alice'})
+REMOVE u.age
+
+-- Remove labels
+MATCH (u:User {name: 'Alice'})
+REMOVE u:Active
+```
+
+### MERGE
+
+Match existing nodes or create new ones if they don't exist. Supports conditional updates with `ON MATCH` and `ON CREATE`.
+
+```cypher
+-- Basic MERGE
+MERGE (u:User {name: 'Alice'})
+
+-- MERGE with conditional updates
+MERGE (u:User {name: 'Alice'})
+ON CREATE SET u.created = timestamp(), u.age = 30
+ON MATCH SET u.lastSeen = timestamp(), u.visitCount = coalesce(u.visitCount, 0) + 1
+RETURN u
 ```
 
 ## Operators
@@ -230,6 +258,30 @@ RETURN u.name
 | `tail(list)` | All but first element |
 | `[elem IN list WHERE predicate]` | List comprehension |
 | `extract(var IN list | expr)` | Transform list |
+
+### CASE
+
+Full conditional logic support in queries.
+
+```cypher
+-- Simple CASE expression
+MATCH (u:User)
+RETURN u.name,
+  CASE u.age
+    WHEN 18 THEN 'Adult'
+    WHEN 65 THEN 'Senior'
+    ELSE 'Other'
+  END AS category
+
+-- Generic CASE expression
+MATCH (u:User)
+RETURN u.name,
+  CASE
+    WHEN u.age < 18 THEN 'Minor'
+    WHEN u.age >= 18 AND u.age < 65 THEN 'Adult'
+    ELSE 'Senior'
+  END AS life_stage
+```
 
 ## Patterns
 

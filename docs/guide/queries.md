@@ -114,6 +114,38 @@ const result = await conn.query(`
 `);
 ```
 
+## CASE Expressions
+
+CongraphDB supports `CASE` expressions for conditional logic within your queries.
+
+### Simple CASE
+
+```javascript
+const result = await conn.query(`
+  MATCH (u:User)
+  RETURN u.name,
+    CASE u.age
+      WHEN 18 THEN 'Adult'
+      WHEN 65 THEN 'Senior'
+      ELSE 'Other'
+    END AS status
+`);
+```
+
+### Generic CASE
+
+```javascript
+const result = await conn.query(`
+  MATCH (u:User)
+  RETURN u.name,
+    CASE
+      WHEN u.age < 18 THEN 'Minor'
+      WHEN u.age >= 18 AND u.age < 65 THEN 'Adult'
+      ELSE 'Senior'
+    END AS life_stage
+`);
+```
+
 ## Ordering and Limiting
 
 ```javascript
@@ -151,6 +183,42 @@ Update properties.
 await conn.query(`
   MATCH (u:User {name: 'Alice'})
   SET u.age = 31
+`);
+```
+
+## REMOVE Clause
+
+Remove properties and labels from nodes and relationships.
+
+```javascript
+// Remove a property
+await conn.query(`
+  MATCH (u:User {name: 'Alice'})
+  REMOVE u.age
+`);
+
+// Remove a label
+await conn.query(`
+  MATCH (u:User {name: 'Alice'})
+  REMOVE u:Active
+`);
+```
+
+## MERGE Clause
+
+Match existing nodes or create new ones if they don't exist. Supports conditional updates with `ON MATCH` and `ON CREATE`.
+
+```javascript
+// Basic MERGE
+await conn.query(`
+  MERGE (u:User {name: 'Alice'})
+`);
+
+// MERGE with conditional updates
+await conn.query(`
+  MERGE (u:User {name: 'Alice'})
+  ON CREATE SET u.created = timestamp(), u.age = 30
+  ON MATCH SET u.lastSeen = timestamp(), u.visitCount = coalesce(u.visitCount, 0) + 1
 `);
 ```
 
@@ -454,6 +522,30 @@ console.log(result.getColumnDataTypes());  // ['STRING', 'INT64']
 // Always close when done
 result.close();
 ```
+
+### Query Execution Statistics
+
+CongraphDB tracks performance metrics for every query execution. You can access these via the `statistics` property.
+
+```javascript
+const result = await conn.query("MATCH (u:User) RETURN u.name");
+
+console.log(result.statistics);
+// Output:
+// {
+//   query: "MATCH (u:User) RETURN u.name",
+//   execution_time_ms: 0.12,
+//   row_count: 5,
+//   query_type: "MATCH"
+// }
+```
+
+| Metric | Description |
+|--------|-------------|
+| `query` | The original query string |
+| `execution_time_ms` | Time taken to execute (excluding network/FFI overhead) |
+| `row_count` | Number of rows in the result set |
+| `query_type` | Type of query (MATCH, CREATE, DELETE, etc.) |
 
 ---
 

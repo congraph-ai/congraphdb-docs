@@ -10,27 +10,42 @@ Cypher Query String
         ▼
     ┌──────────┐
     │  Parser  │  →  AST (Abstract Syntax Tree)
+    │ (cypher) │     using nom combinator
     └──────────┘
         │
         ▼
   ┌─────────────┐
-  │  Planner    │  →  Logical Plan
-  └─────────────┘
+  │  Binder     │  →  Bound Query
+  │ (semantic) │     - Validates labels/properties
+  └─────────────┘     - Binds variables to tables
         │
         ▼
  ┌────────────────┐
-  │   Optimizer   │  →  Optimized Physical Plan
+  │  Builder      │  →  Physical Operator Tree
+  │ (executor)    │     - Constructs execution plan
   └────────────────┘
         │
         ▼
   ┌──────────────┐
-  │   Executor   │  →  Results (Parallel)
+  │   Executor   │  →  Results
+  │ (execution)  │     - Streaming execution
   └──────────────┘
 ```
 
 ## 1. Parsing
 
 The parser converts Cypher text into an AST using the `nom` combinator library.
+
+### Parser Structure
+
+Located in `src/query/cypher/`:
+
+- `mod.rs` - Main parser module
+- `clause.rs` - Clause parsing (MATCH, RETURN, WHERE, etc.)
+- `expr.rs` - Expression parsing
+- `pattern.rs` - Pattern parsing for graph patterns
+- `schema.rs` - Schema statement parsing (CREATE NODE TABLE, etc.)
+- `types.rs` - AST type definitions
 
 ### Example
 
@@ -73,128 +88,182 @@ Query {
 }
 ```
 
-## 2. Logical Planning
+## 2. Binding (Semantic Analysis)
 
-The planner converts the AST into a logical query plan.
+The binder performs semantic analysis on the AST, validating references and binding variables to specific tables.
 
-### Logical Operators
+### Binder Structure
 
-| Operator | Description |
-|----------|-------------|
-| `Scan` | Full table scan |
-| `Filter` | Predicate filtering |
-| `Project` | Column selection |
-| `HashJoin` | Hash-based join |
-| `NestedLoopJoin` | Nested loop join |
-| `Aggregate` | Aggregation |
-| `Sort` | Ordering |
-| `Limit` | Result limiting |
-| `Distinct` | Duplicate removal |
+Located in `src/query/binder/`:
 
-### Example Logical Plan
+- `binder.rs` - Main binder implementation
+- `clause.rs` - Clause-level binding
+- `statement.rs` - Statement-level binding
+- `expression.rs` - Expression binding and validation
+- `pattern.rs` - Pattern binding (nodes, relationships)
+- `types.rs` - Bound query types
+
+### Binding Process
+
+1. **Validate Labels**: Check that all referenced labels exist in the catalog
+2. **Validate Properties**: Check that property references are valid for their types
+3. **Bind Variables**: Map variables to specific table sources
+4. **Type Checking**: Ensure expressions are type-safe
+5. **Resolve Scopes**: Handle variable scoping across query clauses
+
+### Example Binding
+
+For the query above, binding produces:
 
 ```
-Project(u.name, f.name)
-  └─ NestedLoopJoin
+BoundQuery {
+  bound_clauses: [
+    BoundMatch {
+      bound_pattern: [
+        BoundNode {
+          variable: "u",
+          table: "User",
+          filters: [PropertyFilter("name", Equals, "Alice")]
+        },
+        BoundRelationship {
+          type: "KNOWS",
+          direction: Outgoing,
+          table: "KNOWS"
+        },
+        BoundNode {
+          variable: "f",
+          table: "User",
+          filters: []
+        }
+      ]
+    },
+    BoundReturn {
+      items: [
+        BoundProperty("u", "name", StringColumn),
+        BoundProperty("f", "name", StringColumn)
+      ]
+    }
+  ]
+}
+```
+
+## 3. Building (Physical Planning)
+
+The builder converts the bound query into a physical operator tree optimized for execution.
+
+### Builder Structure
+
+Located in `src/query/executor/builder.rs`:
+
+- Converts bound clauses to operators
+- Handles operator composition
+- Manages variable scope across operators
+
+### Physical Operators
+
+Operators are organized into three categories in `src/query/operator/`:
+
+#### Streaming Operators (`streaming/`)
+
+| Operator | Description | File |
+|----------|-------------|------|
+| `Scan` | Full table scan | `scan.rs` |
+| `PatternMatch` | Graph pattern matching | `pattern_match.rs` |
+| `OptionalMatch` | Optional pattern matching (LEFT JOIN) | `optional_match.rs` |
+| `Transform` | Column projection and transformation | `transform.rs` |
+
+#### Non-Streaming Operators (`non_streaming/`)
+
+| Operator | Description | File |
+|----------|-------------|------|
+| `Aggregate` | Aggregation (COUNT, SUM, AVG, etc.) | `aggregate.rs` |
+| `Path` | Path finding operations | `path.rs` |
+| `PathVarLength` | Variable-length path patterns | `path_var_length.rs` |
+
+#### Write Operators (`write/`)
+
+| Operator | Description | File |
+|----------|-------------|------|
+| `Create` | CREATE clause execution | `create.rs` |
+| `Merge` | MERGE clause execution | `merge.rs` |
+| `Delete` | DELETE clause execution | `delete.rs` |
+| `Update` | SET clause execution | `update.rs` |
+
+### Example Physical Plan
+
+```
+Transform(u.name, f.name)
+  └─ PatternMatch
       ├─ Scan(User) u
       │  └─ Filter(u.name = 'Alice')
       └─ Scan(Knows) -> Scan(User) f
 ```
 
-## 3. Optimization
+## 4. Execution
 
-The optimizer rewrites the plan for better performance.
+The executor runs the physical operator tree using a streaming execution model.
 
-### Optimization Rules
+### Executor Structure
 
-1. **Predicate Pushdown**
-   ```
-   Before: Scan → Filter
-   After:  FilteredScan
+Located in `src/query/executor/`:
 
-   Scan all users, then filter by age > 25
-   → Scan users with age > 25 directly
-   ```
+- `execution.rs` - Main execution engine
+- `result.rs` - Result handling and streaming
+- `stats.rs` - Execution statistics
+- `table_manager.rs` - Table access during execution
+- `utils.rs` - Execution utilities
 
-2. **Projection Pushdown**
-   ```
-   Before: Scan(all columns) → Project
-   After:  Scan(only needed columns)
+### Streaming Execution
 
-   Scan all columns, then select name
-   → Scan only name column
-   ```
-
-3. **Join Reordering**
-   ```
-   Before: (A × B) × C  (large joins)
-   After:  A × (B × C)  (small joins first)
-   ```
-
-4. **Index Selection**
-   ```
-   Before: Full scan with filter
-   After:  Index lookup
-
-   Scan(User) WHERE name = 'Alice'
-   → IndexLookup(User.name = 'Alice')
-   ```
-
-## 4. Physical Planning
-
-The logical plan is converted to physical operators with specific algorithms.
-
-### Physical Operators
-
-| Logical | Physical | Description |
-|---------|----------|-------------|
-| Scan | ColumnScan | Read column pages |
-| Filter | SIMDFilter | Vectorized filtering |
-| HashJoin | ParallelHashJoin | Multi-threaded hash join |
-| Aggregate | ParallelAggregate | Multi-threaded aggregation |
-| Sort | ExternalSort | Spill-to-disk sorting |
-
-## 5. Execution
-
-The executor runs the physical plan using parallel execution via `rayon`.
-
-### Parallel Execution Strategy
+CongraphDB uses a streaming execution model (Volcano-style):
 
 ```
 ┌─────────────────────────────────────────────────┐
-│                 Query Execution                 │
+│              Operator Pipeline                  │
 ├─────────────────────────────────────────────────┤
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐         │
-│  │Thread 1 │  │Thread 2 │  │Thread N │         │
-│  │ Chunk 1 │  │ Chunk 2 │  │ Chunk N │         │
-│  └─────────┘  └─────────┘  └─────────┘         │
-│        │            │            │              │
-│        └────────────┴────────────┘              │
-│                     │                           │
-│              ┌──────────┐                       │
-│              │  Merge   │                       │
-│              └──────────┘                       │
+│  Transform pulls from PatternMatch              │
+│    PatternMatch pulls from Scan                 │
+│      Scan reads from storage                    │
+│    PatternMatch joins results                   │
+│  Transform projects final columns               │
 └─────────────────────────────────────────────────┘
 ```
 
-### Work Distribution
+### Pull-Based Iteration
 
-1. **Chunking:** Data divided into chunks (e.g., 1000 rows each)
-2. **Stealing:** Work stealing for load balancing
-3. **Merging:** Partial results merged at end
-
-### Example: Parallel Aggregation
-
+```rust
+// Simplified execution model
+while let Some(row) = operator.next() {
+    // Process row
+    // Return to client
+}
 ```
-Query: MATCH (u:User) RETURN AVG(u.age)
 
-Execution:
-  Thread 1: AVG([25, 30, 28]) → 27.7  (count: 3)
-  Thread 2: AVG([35, 40, 32]) → 35.7  (count: 3)
-  Thread 3: AVG([22, 27, 29]) → 26.0  (count: 3)
+### Result Streaming
 
-  Final: (27.7×3 + 35.7×3 + 26.0×3) / 9 = 29.8
-```
+Results are streamed to the client to minimize memory usage:
+
+1. **Row by row**: Each row is produced and sent immediately
+2. **No materialization**: Intermediate results are not stored
+3. **Lazy evaluation**: Operators only compute when needed
+
+## Query Modifiers
+
+### LIMIT and SKIP
+
+- **LIMIT**: Stops execution after N rows
+- **SKIP**: Skips first N rows
+- **Optimization**: Applied at the executor level
+
+### ORDER BY
+
+- **Sorting**: Uses external sort for large result sets
+- **Optimization**: Pushed down when possible
+
+### DISTINCT
+
+- **Deduplication**: Uses hashing for efficient duplicate removal
+- **Optimization**: Combined with aggregation when possible
 
 ## Vector Query Execution
 
@@ -211,41 +280,58 @@ Execution:
   5. Apply LIMIT
 ```
 
-### HNSW Search
+## Write Query Execution
+
+Write queries (CREATE, MERGE, DELETE, SET) use special write operators:
 
 ```
-┌─────────────────────────────────────────────────┐
-│  HNSW Graph Traversal                          │
-├─────────────────────────────────────────────────┤
-│  1. Enter at random point                       │
-│  2. Greedy search through layers                │
-│  3. Refine in bottom layer                      │
-│  4. Return top-k results                        │
-└─────────────────────────────────────────────────┘
+CREATE (u:User {name: 'Alice'})
+
+Execution:
+  1. Parse and bind
+  2. Build operator tree with Create operator
+  3. Execute Create operator:
+     - Allocate new node ID
+     - Write to WAL
+     - Update in-memory structures
+  4. Return created node
 ```
+
+## Error Handling
+
+Errors can occur at any stage:
+
+| Stage | Error Type | Example |
+|-------|------------|---------|
+| Parser | SyntaxError | Invalid Cypher syntax |
+| Binder | SemanticError | Undefined label, type mismatch |
+| Builder | PlanError | Invalid query structure |
+| Executor | RuntimeError | I/O error, constraint violation |
 
 ## Performance Considerations
 
 ### Memory Usage
 
-- **Streaming:** Results streamed to avoid large allocations
-- **Copy-on-write:** Shared data where possible
-- **Arena allocation:** Bump pointer for temporary data
+- **Streaming**: Results streamed to avoid large allocations
+- **No intermediate materialization**: Operators pass rows directly
+- **Efficient representations**: Compact data structures
 
 ### I/O Optimization
 
-- **Prefetching:** Sequential read ahead
-- **Batching:** Group page reads
-- **Caching:** Keep hot pages in buffer pool
+- **Prefetching**: Sequential read ahead
+- **Batching**: Group page reads
+- **Caching**: Keep hot pages in buffer pool
 
 ### CPU Optimization
 
-- **SIMD:** Vectorized operations where applicable
-- **Cache locality:** Columnar storage improves cache hits
-- **Branch prediction:** Minimize branches in hot paths
+- **Zero-copy**: Avoid unnecessary data copying
+- **Cache locality**: Columnar storage improves cache hits
+- **Branch prediction**: Minimize branches in hot paths
 
 ## See Also
 
 - [Architecture](architecture.md) — System overview
+- [Binder Details](binder.md) — Semantic analysis and binding
+- [Operators](operators.md) — Physical operator reference
 - [Storage Format](storage-format.md) — On-disk structure
 - [Index Structures](index-structures.md) — HNSW details

@@ -122,7 +122,7 @@ Get the CongraphDB version string.
 
 ```javascript
 const version = Database.getVersion();
-console.log(version);  // "0.1.2"
+console.log(version);  // "0.1.6"
 ```
 
 **Returns:** `string`
@@ -281,11 +281,22 @@ console.log(columns);  // ['u.name', 'u.age']
 Get the column data types.
 
 ```javascript
-const types = result.getColumnDataTypes();
-console.log(types);  // ['STRING', 'INT64']
-```
+| `getColumnDataTypes(): Array<string>` | Get the column data types. |
+| `statistics: object` | Get query execution statistics (v0.1.6+). |
 
-**Returns:** `Array<string>`
+#### `statistics`
+
+Contains performance metrics for the query execution.
+
+```javascript
+console.log(result.statistics);
+// {
+//   query: string,
+//   execution_time_ms: number,
+//   row_count: number,
+//   query_type: string
+// }
+```
 
 ## Usage Examples
 
@@ -386,6 +397,12 @@ interface QueryResult {
   close(): void;
   getColumnNames(): Array<string>;
   getColumnDataTypes(): Array<string>;
+  readonly statistics: {
+    readonly query: string;
+    readonly execution_time_ms: number;
+    readonly row_count: number;
+    readonly query_type: string;
+  };
 }
 ```
 

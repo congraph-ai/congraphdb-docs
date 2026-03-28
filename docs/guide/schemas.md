@@ -147,6 +147,36 @@ CongraphDB enforces schema rules:
 - **Relationships** must reference valid node tables
 - **Data types** are enforced on insert/update
 
+## Dynamic Property Creation
+
+While CongraphDB uses a schema-based columnar engine for performance, it provides **schemaless flexibility** through dynamic property creation.
+
+If you attempt to `SET` a property that was not defined in the initial `CREATE NODE TABLE` or `CREATE REL TABLE` statement, CongraphDB will **automatically add a new column** to the table to accommodate the new data.
+
+### Example
+
+```javascript
+// Table created with only 'name' and 'age'
+await conn.query(`
+  CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))
+`);
+
+// Setting a non-existent property 'city'
+await conn.query(`
+  MATCH (u:User {name: 'Alice'})
+  SET u.city = 'New York', u.occupation = 'Engineer'
+`);
+
+// The 'city' and 'occupation' columns are created automatically.
+// They will be available for all future nodes in the 'User' table.
+```
+
+### Key Considerations
+
+1.  **Type Inference**: The data type of the new column is inferred from the first value assigned to it.
+2.  **Performance**: Frequent dynamic column creation can lead to schema churn. It is recommended to define known properties upfront in the schema.
+3.  **Nullability**: Dynamic columns are always nullable. Existing rows will have `NULL` values for the new property.
+
 ## Next Steps
 
 - [Queries](queries.md) — Learn how to query your schema

@@ -87,7 +87,7 @@ db.close();
 
 ## Status
 
-CongraphDB is currently in **alpha** development (v0.1.x). The core storage engine and transaction system are implemented, but query functionality is still being completed.
+CongraphDB is currently in **alpha** development (v0.1.6). The core storage engine, transaction system, and a robust Cypher/JavaScript query interface are implemented, with features like path finding, vector search, and DML operations fully supported.
 
 ## License
 
