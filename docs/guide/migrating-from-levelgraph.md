@@ -629,4 +629,4 @@ const result = await conn.query(`
 
 - [Navigator API Reference](../api/javascript-api.md#navigator) - Complete Navigator documentation
 - [Choosing Your Query Interface](choosing-interface.md) - When to use Navigator vs Cypher
-- [JavaScript API Examples](https://github.com/congraph-ai/congraphdb-sample) - Example code
+- [JavaScript API Examples](https://github.com/congraph-ai/congraphdb-sdk) - Example code

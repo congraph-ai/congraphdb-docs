@@ -370,4 +370,4 @@ const friends = await api.nav(userId).out('FRIEND').values();
 - [JavaScript API Reference](../api/javascript-api.md) - Complete API documentation
 - [Cypher Reference](../api/cypher.md) - Query language syntax
 - [Quick Start](quick-start.md) - Getting started with CongraphDB
-- [Sample Project](https://github.com/congraph-ai/congraphdb-sample) - Example code
+- [SDK Project](https://github.com/congraph-ai/congraphdb-sdk) - Example code

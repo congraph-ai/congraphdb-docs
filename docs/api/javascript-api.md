@@ -270,6 +270,110 @@ const result = await api.query(`
 const rows = await result.getAll();
 ```
 
+### Schema API
+
+The `api.schema` object provides JavaScript-native methods for managing database schema.
+
+#### createNodeTable(name, options)
+
+Create a new node table with specified properties.
+
+```javascript
+await api.schema.createNodeTable('User', {
+  properties: {
+    id: 'string',
+    name: 'string',
+    age: 'int64',
+    email: 'string'
+  },
+  primaryKey: 'id'
+});
+```
+
+#### createRelTable(name, options)
+
+Create a new relationship table.
+
+```javascript
+await api.schema.createRelTable('KNOWS', {
+  from: 'User',
+  to: 'User',
+  properties: {
+    since: 'int64',
+    strength: 'double'
+  }
+});
+```
+
+#### createIndex(tableName, columns)
+
+Create an index on one or more columns.
+
+```javascript
+// Single column index
+await api.schema.createIndex('User', 'email');
+
+// Composite index
+await api.schema.createIndex('Post', ['title', 'createdAt']);
+```
+
+#### getTables()
+
+List all tables in the database.
+
+```javascript
+const tables = await api.schema.getTables();
+for (const table of tables) {
+  console.log(`Table: ${table.name} (${table.table_type})`);
+}
+```
+
+#### dropTable(name)
+
+Drop a table from the database.
+
+```javascript
+await api.schema.dropTable('OldTable');
+```
+
+#### ensureSchema(schema)
+
+Idempotent schema creation - safe to run multiple times. Useful for migrations.
+
+```javascript
+const schema = {
+  nodeTables: [
+    {
+      name: 'User',
+      properties: { id: 'string', name: 'string', age: 'int64' },
+      primaryKey: 'id'
+    }
+  ],
+  relTables: [
+    {
+      name: 'KNOWS',
+      from: 'User',
+      to: 'User',
+      properties: { since: 'int64' }
+    }
+  ]
+};
+
+await api.schema.ensureSchema(schema);
+```
+
+> **See also:** [Schemas Guide](../guide/schemas.md) for complete schema documentation including Cypher DDL syntax and supported property types.
+
+Execute a raw Cypher query.
+
+```javascript
+const result = await api.query(`
+  MATCH (p:Person)-[:KNOWS]->(f:Person)
+  RETURN p.name, f.name
+`);
+const rows = await result.getAll();
+```
+
 ### Utilities
 
 #### close()
@@ -545,8 +649,42 @@ class CongraphDBAPI {
   // Raw queries
   query(cypher: string): Promise<QueryResult>
 
+  // Schema API
+  schema: {
+    createNodeTable(name: string, options: NodeTableOptions): Promise<void>
+    createRelTable(name: string, options: RelTableOptions): Promise<void>
+    createIndex(tableName: string, columns: string | string[]): Promise<void>
+    getTables(): Promise<TableInfo[]>
+    dropTable(name: string): Promise<void>
+    ensureSchema(schema: SchemaDefinition): Promise<void>
+  }
+
   // Utilities
   close(): Promise<void>
+}
+
+interface NodeTableOptions {
+  properties: Record<string, PropertyType>
+  primaryKey: string
+}
+
+interface RelTableOptions {
+  from: string
+  to: string
+  properties?: Record<string, PropertyType>
+}
+
+type PropertyType =
+  | 'bool' | 'int8' | 'int16' | 'int32' | 'int64'
+  | 'uint8' | 'uint16' | 'uint32' | 'uint64'
+  | 'float' | 'double'
+  | 'string' | 'blob'
+  | 'date' | 'timestamp' | 'interval'
+  | `vector[${number}]`
+
+interface SchemaDefinition {
+  nodeTables?: NodeTableOptions[]
+  relTables?: RelTableOptions[]
 }
 
 class Navigator {

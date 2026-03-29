@@ -148,12 +148,108 @@ const result = await conn.query(`
 
 ## Ordering and Limiting
 
+CongraphDB supports `ORDER BY`, `SKIP`, and `LIMIT` clauses for controlling query results.
+
+### ORDER BY
+
+Sort results by one or more columns:
+
 ```javascript
+// Sort by single column (descending)
 const result = await conn.query(`
   MATCH (u:User)
   RETURN u.name, u.age
   ORDER BY u.age DESC
+`);
+
+// Sort by multiple columns
+const result = await conn.query(`
+  MATCH (p:Post)
+  RETURN p.title, p.created, p.author
+  ORDER BY p.created DESC, p.title ASC
+`);
+
+// Sort with aggregation
+const result = await conn.query(`
+  MATCH (u:User)-[:KNOWS]->(f:User)
+  RETURN u.name, COUNT(f) AS friend_count
+  ORDER BY friend_count DESC
+`);
+```
+
+### SKIP and LIMIT
+
+Paginate through results:
+
+```javascript
+// Basic pagination (skip first 10, get next 20)
+const result = await conn.query(`
+  MATCH (u:User)
+  RETURN u.name, u.age
+  ORDER BY u.name
+  SKIP 10 LIMIT 20
+`);
+
+// Get top N results
+const result = await conn.query(`
+  MATCH (u:User)
+  RETURN u.name, u.score
+  ORDER BY u.score DESC
   LIMIT 10
+`);
+
+// Combined pagination
+const page = 2;
+const pageSize = 25;
+const result = await conn.query(`
+  MATCH (p:Post)
+  RETURN p.title
+  ORDER BY p.created DESC
+  SKIP ${page * pageSize} LIMIT ${pageSize}
+`);
+```
+
+## UNION
+
+Combine results from multiple MATCH patterns using the `UNION` operator. This is useful when you need to merge results from different query patterns.
+
+### Basic UNION
+
+```javascript
+// Union of two relationship types
+const result = await conn.query(`
+  MATCH (u:User)-[:FOLLOWS]->(f:User)
+  RETURN u.name AS name, f.name AS value
+  UNION
+  MATCH (u:User)-[:KNOWS]->(k:User)
+  RETURN u.name AS name, k.name AS value
+`);
+```
+
+### UNION with Different Node Types
+
+```javascript
+// Find contacts from different entity types
+const result = await conn.query(`
+  MATCH (u:User)
+  RETURN u.name AS name, u.email AS contact, 'User' AS type
+  UNION
+  MATCH (o:Organization)
+  RETURN o.name AS name, o.website AS contact, 'Organization' AS type
+`);
+```
+
+### UNION with Aggregations
+
+```javascript
+// Combine different counts
+const result = await conn.query(`
+  MATCH (u:User)-[:POSTED]->(:Post)
+  RETURN u.name AS name, COUNT(*) AS count, 'Posts' AS source
+  UNION
+  MATCH (u:User)-[:COMMENTED]->(:Comment)
+  RETURN u.name AS name, COUNT(*) AS count, 'Comments' AS source
+  ORDER BY count DESC
 `);
 ```
 

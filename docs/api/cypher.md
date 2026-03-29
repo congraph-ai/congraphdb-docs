@@ -24,6 +24,71 @@ RETURN u.name AS username, COUNT(*) AS count
 RETURN DISTINCT u.city
 ```
 
+### ORDER BY
+
+Sort results with ASC/DESC modifiers on multiple columns.
+
+```cypher
+-- Single column sort
+MATCH (u:User)
+RETURN u.name, u.age
+ORDER BY u.age DESC
+
+-- Multiple column sort
+MATCH (p:Post)
+RETURN p.title, p.created
+ORDER BY p.created DESC, p.title ASC
+
+-- Sort with aggregation
+MATCH (u:User)-[:KNOWS]->(f:User)
+RETURN u.name, COUNT(f) AS friend_count
+ORDER BY friend_count DESC
+```
+
+### SKIP / LIMIT
+
+Offset and restrict result sets for pagination.
+
+```cypher
+-- Basic pagination
+MATCH (u:User)
+RETURN u.name, u.age
+ORDER BY u.name
+SKIP 10 LIMIT 20
+
+-- Get top 10 results
+MATCH (u:User)
+RETURN u.name, u.score
+ORDER BY u.score DESC
+LIMIT 10
+
+-- Skip first 5, get next 10
+MATCH (p:Post)
+RETURN p.title
+ORDER BY p.created DESC
+SKIP 5 LIMIT 10
+```
+
+### UNION
+
+Combine results from multiple MATCH patterns.
+
+```cypher
+-- Union of two patterns
+MATCH (u:User)-[:FOLLOWS]->(f:User)
+RETURN u.name AS name, f.name AS value
+UNION
+MATCH (u:User)-[:KNOWS]->(k:User)
+RETURN u.name AS name, k.name AS value
+
+-- Union with different node types
+MATCH (u:User)
+RETURN u.name AS name, u.email AS contact
+UNION
+MATCH (o:Organization)
+RETURN o.name AS name, o.website AS contact
+```
+
 ### WHERE
 
 Filter results.

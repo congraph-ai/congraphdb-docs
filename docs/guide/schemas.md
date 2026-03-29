@@ -177,6 +177,180 @@ await conn.query(`
 2.  **Performance**: Frequent dynamic column creation can lead to schema churn. It is recommended to define known properties upfront in the schema.
 3.  **Nullability**: Dynamic columns are always nullable. Existing rows will have `NULL` values for the new property.
 
+## JavaScript Schema API _(v0.1.7+)_
+
+CongraphDB provides a **JavaScript-native Schema API** for defining and managing database schema without writing raw Cypher DDL queries. This API is particularly useful for:
+
+- Type-safe schema creation in JavaScript/TypeScript
+- Schema migrations and version control
+- Programmatic schema management
+- Developers who prefer code over query strings for DDL operations
+
+### Quick Start with Schema API
+
+```javascript
+const { Database, CongraphDBAPI } = require('congraphdb');
+
+// Initialize
+const db = new Database('./my-graph.cgraph');
+await db.init();
+const api = new CongraphDBAPI(db);
+
+// Create node tables
+await api.schema.createNodeTable('User', {
+  properties: {
+    id: 'string',
+    name: 'string',
+    age: 'int64',
+    email: 'string'
+  },
+  primaryKey: 'id'
+});
+
+await api.schema.createNodeTable('Post', {
+  properties: {
+    id: 'string',
+    title: 'string',
+    content: 'string',
+    createdAt: 'int64'
+  },
+  primaryKey: 'id'
+});
+
+// Create relationship tables
+await api.schema.createRelTable('AUTHORED', {
+  from: 'User',
+  to: 'Post',
+  properties: {
+    createdAt: 'int64'
+  }
+});
+
+await api.schema.createRelTable('LIKES', {
+  from: 'User',
+  to: 'Post',
+  properties: {
+    likedAt: 'int64'
+  }
+});
+
+// Create indexes
+await api.schema.createIndex('User', 'email');
+await api.schema.createIndex('Post', ['title', 'createdAt']);
+
+// List all tables
+const tables = await api.schema.getTables();
+console.log('Tables:', tables);
+
+// Cleanup
+await api.close();
+await db.close();
+```
+
+### Schema Migration Style
+
+For idempotent schema creation (useful for migrations):
+
+```javascript
+const { Database, CongraphDBAPI } = require('congraphdb');
+
+const db = new Database('./my-graph.cgraph');
+await db.init();
+const api = new CongraphDBAPI(db);
+
+// Define your complete schema
+const schema = {
+  nodeTables: [
+    {
+      name: 'User',
+      properties: { id: 'string', name: 'string', age: 'int64' },
+      primaryKey: 'id'
+    },
+    {
+      name: 'Post',
+      properties: { id: 'string', title: 'string', content: 'string' },
+      primaryKey: 'id'
+    }
+  ],
+  relTables: [
+    {
+      name: 'AUTHORED',
+      from: 'User',
+      to: 'Post',
+      properties: { createdAt: 'int64' }
+    }
+  ]
+};
+
+// Ensure schema exists (idempotent - safe to run multiple times)
+await api.schema.ensureSchema(schema);
+```
+
+### Direct Connection Methods
+
+You can also use schema methods directly on a connection:
+
+```javascript
+const { Database } = require('congraphdb');
+
+const db = new Database('./my-graph.cgraph');
+await db.init();
+const conn = db.createConnection();
+
+// Create node table
+await conn.createNodeTable('User', [
+  { name: 'id', type: 'STRING', nullable: false },
+  { name: 'name', type: 'STRING', nullable: false },
+  { name: 'age', type: 'INT64', nullable: true }
+], 'id');
+
+// Create relationship table
+await conn.createRelTable('KNOWS', 'User', 'User', [
+  { name: 'since', type: 'INT64', nullable: false }
+]);
+
+// Get all tables
+const tables = await conn.getTables();
+for (const table of tables) {
+  console.log(`Table: ${table.name} (${table.table_type})`);
+  for (const prop of table.properties) {
+    console.log(`  - ${prop.name}: ${prop.type_}`);
+  }
+}
+
+// Create index
+await conn.createIndex('User', ['name']);
+
+// Drop table
+await conn.dropTable('OldTable');
+```
+
+### Supported Property Types
+
+The Schema API supports the following property types:
+
+| Type | Description | Example |
+|------|-------------|---------|
+| `bool` | Boolean | `{ active: 'bool' }` |
+| `int8` | 8-bit signed integer | `{ flags: 'int8' }` |
+| `int16` | 16-bit signed integer | `{ smallId: 'int16' }` |
+| `int32` | 32-bit signed integer | `{ count: 'int32' }` |
+| `int64` | 64-bit signed integer | `{ timestamp: 'int64' }` |
+| `uint8` | 8-bit unsigned integer | `{ byte: 'uint8' }` |
+| `uint16` | 16-bit unsigned integer | `{ short: 'uint16' }` |
+| `uint32` | 32-bit unsigned integer | `{ id: 'uint32' }` |
+| `uint64` | 64-bit unsigned integer | `{ bigId: 'uint64' }` |
+| `float` | 32-bit floating point | `{ ratio: 'float' }` |
+| `double` | 64-bit floating point | `{ score: 'double' }` |
+| `string` | Variable-length string | `{ name: 'string' }` |
+| `blob` | Binary data | `{ data: 'blob' }` |
+| `date` | Date (no time) | `{ birthDate: 'date' }` |
+| `timestamp` | Timestamp with timezone | `{ createdAt: 'timestamp' }` |
+| `interval` | Time duration | `{ duration: 'interval' }` |
+| `vector[]` | Fixed-size vector | `{ embedding: 'vector[128]' }` |
+
+> **✅ Available in v0.1.7+**: The Schema API is fully implemented with TypeScript definitions. Use `PropertyTypes` constant for type-safe property type definitions.
+
 ## Next Steps
 
 - [Queries](queries.md) — Learn how to query your schema
