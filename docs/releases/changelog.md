@@ -5,6 +5,95 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.9] - 2026-04-01
+
+### Added
+- **Algorithm Streaming API** - Stream processing support for graph algorithms
+  - Real-time result streaming for large-scale graph computations
+  - Memory-efficient processing for graph analytics
+- **WRITE clause support** - Direct write operations within queries
+  - Combine reads and writes in single Cypher statements
+  - Simplified update and insert patterns
+- **Parallel Spectral Clustering** - Enhanced community detection
+  - Multi-core optimized spectral clustering algorithm
+  - Improved performance on large graphs
+- **Infomap algorithm** - Information-theoretic community detection
+  - Optimizes for minimum description length of network flows
+  - Effective for hierarchical community structures
+- **SLPA algorithm** - Speaker-Listener Label Propagation Algorithm
+  - Overlapping community detection
+  - Suitable for social network analysis
+- **Comprehensive Graph Algorithm API** with CALL syntax
+  - Unified interface for all graph algorithms
+  - Consistent parameter passing and result handling
+  - Support for algorithm chaining and composition
+
+### Changed
+- **Reorganized N-API modules** - Improved code organization
+- **Enhanced algorithm test coverage** - More comprehensive testing
+
+## [0.1.8] - 2026-03-29
+
+### Added
+- **Optimistic Concurrency Control (OCC)** - Full support for serializable snapshot isolation
+  - Version tracking for all rows (nodes and relationships) with `_version` column
+  - Read set and write set tracking per transaction
+  - Commit-time validation to detect conflicts before applying changes
+  - Automatic retry mechanism with exponential backoff on conflicts
+  - New `ConcurrencyConflict` error type for conflict detection
+  - Configurable OCC retry attempts via `max_occ_retries` in DatabaseConfig
+- **Adaptive OCC Retry System** - Production-ready features for high-concurrency workloads
+  - Configurable adaptive retry based on conflict rate
+  - Automatic retry count adjustment (3x multiplier under high contention)
+  - Exponential backoff with jitter to reduce thundering herd
+  - Statistics tracking for retry patterns
+- **OCC Version Cache** - LRU cache for version lookups (default 1000 entries)
+  - Reduces table access overhead during validation
+  - Automatic invalidation on writes
+  - Configurable cache size
+- **Lock-Free Version Reads** - Atomic version storage with Acquire/Release ordering
+  - Separate atomic arrays for node and relationship tables
+  - Get version without any locks for high-concurrency scenarios
+  - Fallback to column storage for persistence
+- **JavaScript Schema API** - Native interfaces for managing database schema from Node.js
+  - `createNodeTable()` and `createRelTable()` for schema creation
+  - `dropTable()` for removing tables
+  - `createIndex()` and `dropIndex()` for index management
+  - `ensureSchema()` for idempotent schema creation
+  - `getTables()` for schema introspection
+  - `PropertyTypes` constant for type-safe property definitions
+- **OCC JavaScript API methods**
+  - `commitWithOccSync(maxRetries)` - commit with automatic retry
+  - `executeWithRetrySync(operationName, maxRetries)` - retry wrapper
+  - `getOccStatistics()` - retrieve conflict metrics
+  - `resetOccStatistics()` - reset counters
+  - `getVersionCacheSize()` / `clearVersionCache()` - cache management
+- **OCC Statistics & Monitoring**
+  - Track total validations, successes, conflicts, and retries
+  - Conflict rate calculation (0-100%)
+  - Max retry count tracking
+  - Snapshot API for monitoring with reset functionality
+
+### Changed
+- **Node/edge matching** - Now supports both `id` and `_id` fields
+- **Error handling** - Improved error messages throughout the API
+- **QueryResult** - Added `toString()` method for better console output
+- **Developer infrastructure** - Added Prettier and ESLint configuration
+  - .prettierrc with project code style settings
+  - eslint.config.mjs with recommended rules and Prettier integration
+  - Added lint, lint:fix, format, and format:check scripts
+
+### Performance Improvements
+- No locks on version reads in common paths
+- Reduced validation overhead via caching
+- Better throughput under high contention with graceful degradation
+
+### Test Coverage
+- Added OCC unit tests for read/write set tracking
+- Added OCC integration tests for concurrent scenarios
+- Added SchemaAPI tests in `npm/test/schema.test.js`
+- Added JavaScript schema API tests in `test/javascript/17-schema-api.test.js`
+
 ## [0.1.7] - 2026-03-28
 
 ### Added

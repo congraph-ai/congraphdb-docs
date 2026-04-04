@@ -349,6 +349,51 @@ The Schema API supports the following property types:
 | `interval` | Time duration | `{ duration: 'interval' }` |
 | `vector[]` | Fixed-size vector | `{ embedding: 'vector[128]' }` |
 
+### PropertyTypes Constant (v0.1.8+)
+
+For type-safe schema definitions, use the `PropertyTypes` constant:
+
+```javascript
+const { Database, PropertyTypes } = require('congraphdb');
+
+const db = new Database('./my-graph.cgraph');
+await db.init();
+const conn = db.createConnection();
+
+// Using PropertyTypes for type safety
+await conn.createNodeTable('Document', [
+  { name: 'id', type: PropertyTypes.String },
+  { name: 'title', type: PropertyTypes.String },
+  { name: 'tags', type: PropertyTypes.List },
+  { name: 'embedding', type: PropertyTypes.Vector },
+  { name: 'published', type: PropertyTypes.Bool },
+  { name: 'views', type: PropertyTypes.Int64 },
+  { name: 'score', type: PropertyTypes.Float64 },
+], 'id');
+
+// Available PropertyTypes
+PropertyTypes.Bool       // Boolean values
+PropertyTypes.Int8       // 8-bit signed integer
+PropertyTypes.Int16      // 16-bit signed integer
+PropertyTypes.Int32      // 32-bit signed integer
+PropertyTypes.Int64      // 64-bit signed integer
+PropertyTypes.UInt8      // 8-bit unsigned integer
+PropertyTypes.UInt16     // 16-bit unsigned integer
+PropertyTypes.UInt32     // 32-bit unsigned integer
+PropertyTypes.UInt64     // 64-bit unsigned integer
+PropertyTypes.Float      // 32-bit floating point
+PropertyTypes.Double     // 64-bit floating point
+PropertyTypes.String     // Variable-length string
+PropertyTypes.Blob       // Binary data
+PropertyTypes.Date       // Date (no time)
+PropertyTypes.Timestamp  // Timestamp with timezone
+PropertyTypes.Interval   // Time duration
+PropertyTypes.List       // List/array type
+PropertyTypes.Vector     // Fixed-size vector (for embeddings)
+```
+
+> **Use PropertyTypes for type-safe schema definitions and better IDE autocomplete.**
+
 > **✅ Available in v0.1.7+**: The Schema API is fully implemented with TypeScript definitions. Use `PropertyTypes` constant for type-safe property type definitions.
 
 ## Next Steps

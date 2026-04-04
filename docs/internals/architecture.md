@@ -179,6 +179,21 @@ impl Database {
   - **HNSW (`hnsw`)**: Vector similarity search
   - **Hash**: Fast exact match lookups
 
+### 6. Algorithm Module
+
+- **Directory:** `src/algorithm/`
+- **Purpose:** Graph algorithms operating directly on table layer
+- **Components:**
+  - **Centrality**: PageRank, Betweenness, Closeness, Degree
+  - **Community Detection**: Louvain, Leiden, Spectral, SLPA, Infomap, Label Propagation, Walktrap
+  - **Traversal**: BFS, DFS
+  - **Path**: Dijkstra, Bidirectional Dijkstra
+  - **Analytics**: Triangle Count
+- **Configuration**: `AlgorithmConfig` with direction, iterations, tolerance
+- **Result Types**: NodeScores, NodeLabels, TraversalOrder, ShortestPaths, TriangleCount
+
+> **See also:** [Algorithm Internals](algorithms.md) for detailed algorithm documentation.
+
 ## Recent Architecture Improvements
 
 The recent refactoring introduced several benefits:
@@ -283,6 +298,24 @@ The recent refactoring introduced several benefits:
 ```
 
 ## Concurrency Model
+
+### Optimistic Concurrency Control (OCC)
+
+CongraphDB v0.1.8+ implements OCC with:
+- Read/Write set tracking per transaction
+- Version-based conflict detection
+- LRU version cache (1000 entries default)
+- Lock-free atomic version reads
+- Adaptive retry system (up to 3x multiplier under contention)
+
+### OCC Workflow
+
+1. **Read Phase** - Record versions in read set
+2. **Validation Phase** - Check versions haven't changed
+3. **Write Phase** - Apply writes and increment versions
+4. **Retry** - On conflict, rollback and retry with backoff
+
+### Concurrency Model
 
 - **Readers**: MVCC-based concurrent reads
 - **Writers**: Single-writer concurrency (WAL serialization)

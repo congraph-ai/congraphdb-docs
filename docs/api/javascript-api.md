@@ -386,6 +386,89 @@ await api.close();
 
 ---
 
+## OCC Methods (v0.1.8+)
+
+Optimistic Concurrency Control methods for high-concurrency scenarios.
+
+### commitWithOccSync(maxRetries)
+
+Commit the current transaction with automatic retry on OCC conflicts.
+
+```javascript
+conn.beginTransaction();
+
+try {
+  await conn.query(`MATCH (u:User {id: 'alice'}) SET u.balance = u.balance - 100`);
+  await conn.query(`MATCH (u:User {id: 'bob'}) SET u.balance = u.balance + 100`);
+
+  // Commit with automatic retry on conflict
+  await conn.commitWithOccSync(10); // max 10 retries
+} catch (error) {
+  conn.rollback();
+  throw error;
+}
+```
+
+### executeWithRetrySync(fn, maxRetries)
+
+Execute operations with automatic retry on OCC conflicts.
+
+```javascript
+const result = await conn.executeWithRetrySync(5, () => {
+  return conn.query(`
+    MATCH (u:User {id: $id})
+    SET u.lastLogin = $ts
+    RETURN u
+  `, { id: 'alice', ts: Date.now() });
+});
+```
+
+### getOccStatistics()
+
+Get OCC conflict metrics for monitoring concurrency patterns.
+
+```javascript
+const stats = await conn.getOccStatistics();
+console.log(stats);
+// {
+//   successful_transactions: 1250,
+//   failed_transactions: 5,
+//   conflicts_detected: 23,
+//   total_retries: 18,
+//   max_retry_count: 3,
+//   conflict_rate: 1.84  // percentage
+// }
+```
+
+### resetOccStatistics()
+
+Reset OCC statistics counters.
+
+```javascript
+await conn.resetOccStatistics();
+```
+
+### getVersionCacheSize()
+
+Get the current size of the OCC version cache.
+
+```javascript
+const cacheSize = await conn.getVersionCacheSize();
+console.log(`Version cache entries: ${cacheSize}`);
+```
+
+### clearVersionCache()
+
+Clear the OCC version cache.
+
+```javascript
+await conn.clearVersionCache();
+```
+
+> **See also:** [OCC Guide](../guide/occ.md) for complete OCC documentation.
+
+---
+
 ## Navigator
 
 Fluent graph traversal API (LevelGraph-compatible).

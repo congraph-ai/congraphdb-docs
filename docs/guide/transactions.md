@@ -158,7 +158,43 @@ async function transferFriendship(fromUser, toUser, newFriend) {
 transferFriendship('Alice', 'Bob', 'Charlie').catch(console.error);
 ```
 
+## Optimistic Concurrency Control (OCC) (v0.1.8+)
+
+CongraphDB v0.1.8+ includes Optimistic Concurrency Control for high-concurrency scenarios. See [OCC Guide](occ.md) for full details.
+
+### OCC-Enabled Transactions
+
+For high-concurrency scenarios, use OCC-aware commit:
+
+```javascript
+// Commit with automatic retry on conflict
+await conn.commitWithOccSync(10); // max 10 retries
+
+// Execute with retry wrapper
+const result = await conn.executeWithRetrySync(5, () => {
+  return conn.query('MATCH (u:User) RETURN u');
+});
+```
+
+### OCC Statistics
+
+Monitor your application's concurrency patterns:
+
+```javascript
+const stats = await conn.getOccStatistics();
+console.log(stats);
+// {
+//   successful_transactions: 1250,
+//   failed_transactions: 5,
+//   conflicts_detected: 23,
+//   total_retries: 18,
+//   max_retry_count: 3,
+//   conflict_rate: 1.84  // percentage
+// }
+```
+
 ## Next Steps
 
+- [Optimistic Concurrency Control](occ.md) — High-concurrency transactions
 - [Vector Search](vector-search.md) — Semantic search with embeddings
 - [Performance](performance.md) — Optimization tips
