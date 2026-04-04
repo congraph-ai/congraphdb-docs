@@ -429,6 +429,52 @@ Each algorithm has comprehensive tests:
 - Performance tests on synthetic data
 - Edge case tests (empty, single node, disconnected)
 
+## Streaming API (v0.1.9+)
+
+CongraphDB v0.1.9+ includes a streaming API for memory-efficient algorithm execution on large graphs.
+
+### Streaming Results
+
+Algorithms can return results in batches to avoid loading all results into memory at once:
+
+```rust
+pub enum AlgorithmResult {
+    NodeScores(Vec<(NodeOffset, f64)>),
+    NodeLabels(Vec<(NodeOffset, u64)>),
+    TraversalOrder(Vec<(NodeOffset, usize)>),
+    ShortestPaths(Vec<PathResult>),
+    TriangleCount(TriangleCountResult),
+    Streaming {
+        batch_size: usize,
+        total_batches: Option<usize>,
+        // ... streaming-specific fields
+    },
+}
+```
+
+### Memory Benefits
+
+- **Large-scale analytics** - Process graphs larger than available memory
+- **Real-time results** - Start processing results before algorithm completes
+- **Reduced footprint** - Only keep current batch in memory
+
+### Usage Example
+
+```javascript
+// Streaming algorithm execution
+const result = conn.runAlgorithmSync('pagerank', JSON.stringify({
+  dampingFactor: 0.85,
+  streaming: true,
+  batchSize: 1000
+}));
+
+// Process results as they arrive
+const scores = JSON.parse(result);
+for (const batch of scores.batches) {
+  processBatch(batch);  // Handle each batch incrementally
+}
+```
+
 ## Future Enhancements
 
 ### Planned Algorithms
@@ -441,7 +487,6 @@ Each algorithm has comprehensive tests:
 ### Optimizations
 
 - **GPU Acceleration** for PageRank and spectral clustering
-- **Streaming Algorithms** for very large graphs
 - **Incremental Updates** for dynamic graphs
 - **Approximation Algorithms** for faster results
 

@@ -4,14 +4,14 @@
 
 CongraphDB is an embedded, serverless graph database designed for local-first applications. Built with Rust for memory safety and extreme performance, it provides a native Node.js bindings layer via napi-rs.
 
-## What's New in v0.1.7
+## What's New in v0.1.9
 
-- **Query Result Modifiers** — ORDER BY with ASC/DESC, SKIP, and LIMIT clauses for result control
-- **Variable-Length Path Traversal** — `[*..n]` syntax for flexible path patterns
-- **Union Operator** — Combine results from multiple MATCH patterns
-- **Comprehensive TypeScript Definitions** — Complete index.d.ts for CongraphDB API
-- **Major Codebase Refactoring** — Improved modular structure (query binder, operators, N-API bindings)
-- **Bug Fixes** — Relationship RETURN, multi-node-table patterns, case-insensitive keywords, edge query compatibility
+- **Algorithm Streaming API** — Stream processing for large-scale graph computations
+- **WRITE Clause Support** — Direct write operations within Cypher queries
+- **Graph Algorithms** — Parallel Spectral Clustering, Infomap, and SLPA for community detection
+- **Comprehensive Graph Algorithm API** — CALL syntax for unified algorithm interface
+- **Optimistic Concurrency Control** — Serializable snapshot isolation for high-concurrency workloads
+- **JavaScript Schema API** — Native interfaces for schema management from Node.js
 
 See the [Changelog](releases/changelog.md) for full release notes.
 
@@ -83,7 +83,7 @@ db.close();
 
 ## Status
 
-CongraphDB is currently in **alpha** development (v0.1.7). The core storage engine, transaction system, and a robust Cypher/JavaScript query interface are implemented, with features like path finding, vector search, DML operations, and query result modifiers fully supported.
+CongraphDB is currently in **alpha** development (v0.1.9). The core storage engine, transaction system, and a robust Cypher/JavaScript query interface are implemented, with features like graph algorithms, optimistic concurrency control, WRITE clause support, and streaming API fully supported.
 
 ## License
 

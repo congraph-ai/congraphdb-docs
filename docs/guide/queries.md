@@ -300,6 +300,65 @@ await conn.query(`
 `);
 ```
 
+## WRITE Clause
+
+Combine read and write operations in a single Cypher statement. The WRITE clause allows you to perform modifications while also returning results from the same query.
+
+### WRITE with CREATE
+
+```javascript
+// Create nodes and return them
+const result = await conn.query(`
+  WRITE CREATE (u:User {name: 'Dave', age: 28})
+  RETURN u
+`);
+```
+
+### WRITE with SET
+
+```javascript
+// Update and return the modified node
+const result = await conn.query(`
+  MATCH (u:User {name: 'Alice'})
+  WRITE SET u.age = 32, u.lastUpdated = timestamp()
+  RETURN u.name, u.age, u.lastUpdated
+`);
+```
+
+### WRITE with DELETE
+
+```javascript
+// Delete and return what was deleted
+const result = await conn.query(`
+  MATCH (u:User {name: 'Bob'})-[k:KNOWS]->(f:User)
+  WRITE DELETE k
+  RETURN u.name AS from_user, f.name AS to_user
+`);
+```
+
+### WRITE with Multiple Operations
+
+```javascript
+// Complex write operation with reads
+const result = await conn.query(`
+  MATCH (u:User {name: 'Alice'})
+  WRITE CREATE (u)-[:KNOWS {since: 2024}]->(new:User {name: 'Eve', age: 27})
+  RETURN u.name AS user, new.name AS created
+`);
+```
+
+### WRITE with MERGE
+
+```javascript
+// Merge and return the result
+const result = await conn.query(`
+  WRITE MERGE (u:User {name: 'Frank'})
+  ON CREATE SET u.created = timestamp()
+  ON MATCH SET u.lastSeen = timestamp()
+  RETURN u.name, u.created, u.lastSeen
+`);
+```
+
 ## MERGE Clause
 
 Match existing nodes or create new ones if they don't exist. Supports conditional updates with `ON MATCH` and `ON CREATE`.

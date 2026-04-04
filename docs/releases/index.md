@@ -9,7 +9,7 @@ Information about CongraphDB releases and version history.
 
 ## Current Version
 
-**v0.1.7** — Latest stable release
+**v0.1.9** — Latest stable release
 
 ## Version Support
 
