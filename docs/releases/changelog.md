@@ -5,6 +5,62 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.10] - 2026-04-07
+
+### Added
+- **Document API** - New methods for RAG (Retrieval-Augmented Generation) workflows
+  - `createChunk()` - Create document chunks with embeddings
+  - `createEntity()` - Create knowledge graph entities
+  - `createFact()` - Create relationships between entities
+  - `nodeExists()` - Check node existence by ID
+  - Vector embeddings support as FLOAT[] arrays for HNSW indexing
+  - Methods return created nodes instead of just success/failure
+- **SQL DDL Support** - CREATE TABLE and INSERT INTO syntax
+  - CREATE NODE TABLE with column definitions and NOT NULL constraints
+  - CREATE REL TABLE with FROM/TO type specifications
+  - INSERT INTO ... VALUES syntax for node creation
+  - SQL-style syntax while maintaining Cypher graph model compatibility
+- **Lock Manager** - Deadlock prevention and transaction coordination
+  - Centralized lock manager with strict ordering rules
+  - Ascending ID-based lock ordering to prevent circular wait conditions
+  - Timeout mechanism (default 2000ms) for lock acquisition
+  - Integration with transaction commit flow
+  - Lock acquisition based on transaction write set before OCC validation
+- **Comprehensive TypeScript Type System** - Enhanced type safety and developer ergonomics
+  - Generic Node<T> and Edge<T> interfaces with property inference
+  - Discriminated union Result<T> type for error handling
+  - Strict mode types with no null/any and undefined-only optionals
+  - Type-safe schema builder (NodeSchema, RelationshipSchema)
+  - Fluent Cypher query builder with compile-time type checking
+  - ORM layer with Model, Repository, and ActiveRecord patterns
+  - Multiple entry points: main, /strict, /types, /native
+- **Query Parameter Support** - $placeholder substitution in Cypher queries
+  - QueryResult convenience methods: .all(), .one(), .first(), .scalar()
+  - Automatic string escaping for parameter values
+- **Extended Graph Algorithms**
+  - Closeness centrality, Betweenness centrality
+  - Label propagation, Louvain, Leiden community detection
+  - Strongly Connected Components (SCC)
+  - Triangle counting, Dijkstra shortest path
+  - Improved algorithm configuration parsing from JSON
+- **SHOW TABLES** Cypher command for listing all tables
+- **Array Literals Support** - `[0.1, 0.2, 0.3]` syntax in INSERT statements
+- **JSON String Arrays** - Automatic conversion to Vector type for HNSW compatibility
+
+### Fixed
+- **getTables() returning empty object** - Now properly returns array of tables
+  - Tables created via Database API are now visible to Cypher queries
+  - Fixed catalog synchronization across multiple connections
+- **Type-aware conversion** - Array/vector columns properly handled in INSERT statements
+  - Value::Vector handling for HNSW compatibility
+- **Lock timeout** - Increased to 2000ms for high contention scenarios
+
+### Changed
+- Reorganized lock manager integration tests into dedicated `lock_manager/` subdirectory
+- Removed unused `raw_id` method from `ResourceId` enum
+- Enhanced formatting consistency across test files
+
+
 ## [0.1.9] - 2026-04-01
 
 ### Added

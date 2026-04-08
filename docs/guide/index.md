@@ -13,6 +13,11 @@ Welcome to the CongraphDB User Guide. This section covers everything you need to
 - [Queries](queries.md) — Query your data using Cypher
 - [Transactions](transactions.md) — Work with ACID transactions
 
+## TypeScript
+
+- [TypeScript Guide](typescript.md) — Type-safe graph database operations with TypeScript
+- [TypeScript Migration Guide](typescript-migration.md) — Migrate JavaScript projects to TypeScript
+
 ## Advanced Topics
 
 - [Vector Search](vector-search.md) — Semantic search with HNSW vector index
