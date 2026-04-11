@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.11] - 2026-04-10
+
+### Added
+- **Transaction Control Statements** - Explicit `BEGIN` and `COMMIT` support in Cypher
+- **Hierarchical Louvain Algorithm** - Multi-level community detection via N-API and `applyCommunityLabels`
+- **WAL-based Recovery & Undo Logging** - Enhanced transaction durability and automatic crash recovery
+- **Improved Transaction Safety** - Correctness fixes for concurrent transactions and deadlock prevention
+- **Extended Algorithm Support**
+  - Normalized closeness centrality for disconnected graphs
+  - Improved Leiden algorithm with stable node-to-community mapping and termination conditions
+  - Dijkstra shortest path with weight-type conversion and direction handling
+  - Spectral clustering with node limiting (`k`)
+  - Triangle count support for small graphs
+- **Hash Index Enhancements** - Value-based key operations and improved type conversion for wider compatibility
+
+### Fixed
+- **Node/Relationship Deletion Detection** - Improved accuracy in identifying deleted entities during query execution
+- **Lock Manager Coordination** - Fixed field clearing issues in lock release flow
+- **CSR Bounds Checking** - Prevented out-of-bounds access during neighbor retrieval in core traversal logic
+- **Closeness Centrality Calculation** - Fixed formula to correctly use reachable node count
+- **Persistence Testing** - Added required node property schemas to ensure consistent transaction behavior in tests
+
+### Changed
+- **Major Test Infrastructure Refactoring** - Reorganized monolithic test files into a modular, flat directory structure for better maintainability
+- **Code Quality Improvements** - Comprehensive linting and formatting pass across the entire codebase
+- **Type Definition Cleanup** - Refined TypeScript types and removed redundant definitions
+
 ## [0.1.10] - 2026-04-07
 
 ### Added

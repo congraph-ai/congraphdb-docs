@@ -157,6 +157,20 @@ ON MATCH SET u.lastSeen = timestamp(), u.visitCount = coalesce(u.visitCount, 0) 
 RETURN u
 ```
 
+### BEGIN / COMMIT
+
+Explicit transaction control statements.
+
+```cypher
+-- Start a transaction
+BEGIN
+
+-- Commit a transaction
+COMMIT
+```
+
+Note: Transactions are also automatically managed for single statements if not explicitly started.
+
 ## Operators
 
 ### Comparison
@@ -346,6 +360,58 @@ RETURN u.name,
     WHEN u.age >= 18 AND u.age < 65 THEN 'Adult'
     ELSE 'Senior'
   END AS life_stage
+```
+
+## Graph Algorithms
+
+CongraphDB includes high-performance implementations of common graph algorithms, accessible via `CALL` or specific functions.
+
+### Community Detection
+
+| Algorithm | Description |
+|-----------|-------------|
+| `louvain` | Hierarchical Louvain modularity optimization |
+| `leiden` | Advanced community detection (stable Louvain) |
+| `labelPropagation` | Label propagation algorithm (LPA) |
+| `infomap` | Information-theoretic community detection |
+| `slpa` | Overlapping community detection |
+| `spectral` | Spectral clustering with node limiting |
+
+```cypher
+-- Run Louvain and apply labels to nodes
+CALL louvain() YIELD node, community
+SET node.community = community
+```
+
+### Centrality & Rankings
+
+| Algorithm | Description |
+|-----------|-------------|
+| `pagerank` | PageRank importance score |
+| `betweenness` | Betweenness centrality |
+| `closeness` | Closeness centrality (normalized for disconnected graphs) |
+| `degree` | Degree centrality |
+
+```cypher
+-- Calculate PageRank
+CALL pagerank() YIELD node, score
+RETURN node.name, score
+ORDER BY score DESC
+```
+
+### Path & Topology
+
+| Algorithm | Description |
+|-----------|-------------|
+| `dijkstra` | Weighted shortest path |
+| `scc` | Strongly Connected Components |
+| `wcc` | Weakly Connected Components |
+| `triangles` | Triangle counting |
+
+```cypher
+-- Count triangles
+CALL triangles() YIELD count
+RETURN count AS total_triangles
 ```
 
 ## Patterns

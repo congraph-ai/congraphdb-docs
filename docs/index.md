@@ -4,14 +4,15 @@
 
 CongraphDB is an embedded, serverless graph database designed for local-first applications. Built with Rust for memory safety and extreme performance, it provides a native Node.js bindings layer via napi-rs.
 
-## What's New in v0.1.9
+## What's New in v0.1.11
 
-- **Algorithm Streaming API** — Stream processing for large-scale graph computations
-- **WRITE Clause Support** — Direct write operations within Cypher queries
-- **Graph Algorithms** — Parallel Spectral Clustering, Infomap, and SLPA for community detection
-- **Comprehensive Graph Algorithm API** — CALL syntax for unified algorithm interface
-- **Optimistic Concurrency Control** — Serializable snapshot isolation for high-concurrency workloads
-- **JavaScript Schema API** — Native interfaces for schema management from Node.js
+- **Transaction Control Statements** — Explicit `BEGIN` and `COMMIT` support in Cypher
+- **Hierarchical Louvain Algorithm** — Multi-level community detection for large graphs
+- **WAL-based Recovery** — Enhanced transaction durability and automatic crash recovery
+- **Document API** — Specialized methods for RAG (Retrieval-Augmented Generation) workflows
+- **SQL DDL Support** — `CREATE NODE TABLE` and `INSERT INTO` syntax alongside Cypher
+- **Improved Graph Algorithms** — Normalized closeness centrality and stable Leiden implementation
+- **Lock Manager** — Deadlock prevention with timeout-based coordination
 
 See the [Changelog](releases/changelog.md) for full release notes.
 
@@ -83,7 +84,7 @@ db.close();
 
 ## Status
 
-CongraphDB is currently in **alpha** development (v0.1.9). The core storage engine, transaction system, and a robust Cypher/JavaScript query interface are implemented, with features like graph algorithms, optimistic concurrency control, WRITE clause support, and streaming API fully supported.
+CongraphDB is currently in **alpha** development (v0.1.11). The core storage engine, transaction system, and a robust Cypher/JavaScript query interface are implemented, with features like graph algorithms, optimistic concurrency control, transaction control statements, and Document API fully supported.
 
 ## License
 
