@@ -4,15 +4,14 @@
 
 CongraphDB is an embedded, serverless graph database designed for local-first applications. Built with Rust for memory safety and extreme performance, it provides a native Node.js bindings layer via napi-rs.
 
-## What's New in v0.1.11
+## What's New in v0.1.12
 
-- **Transaction Control Statements** — Explicit `BEGIN` and `COMMIT` support in Cypher
-- **Hierarchical Louvain Algorithm** — Multi-level community detection for large graphs
-- **WAL-based Recovery** — Enhanced transaction durability and automatic crash recovery
-- **Document API** — Specialized methods for RAG (Retrieval-Augmented Generation) workflows
-- **SQL DDL Support** — `CREATE NODE TABLE` and `INSERT INTO` syntax alongside Cypher
-- **Improved Graph Algorithms** — Normalized closeness centrality and stable Leiden implementation
-- **Lock Manager** — Deadlock prevention with timeout-based coordination
+- **Hybrid Deletion Detection** — Improved accuracy in identifying deleted entities by distinguishing between empty properties and deleted rows
+- **OptionalMatch Refinements** — Optimized streaming logic for `OPTIONAL MATCH` to ensure correct propagation of unmatched rows with `NULL` values
+- **Eager Mutation Execution** — Standardized query executor to use eager execution for mutation queries while maintaining streaming for read-only operations
+- **Cardinality Regressions** — Resolved issues in query planning and execution that led to incorrect result counts
+- **NapiResult Unwrapping** — Standardized asynchronous API handling across service layers
+- **WAL Durability** — Enhanced crash recovery and undo logging stability
 
 See the [Changelog](releases/changelog.md) for full release notes.
 
@@ -84,7 +83,7 @@ db.close();
 
 ## Status
 
-CongraphDB is currently in **alpha** development (v0.1.11). The core storage engine, transaction system, and a robust Cypher/JavaScript query interface are implemented, with features like graph algorithms, optimistic concurrency control, transaction control statements, and Document API fully supported.
+CongraphDB is currently in **alpha** development (v0.1.12). The core storage engine, transaction system, and a robust Cypher/JavaScript query interface are implemented, with features like graph algorithms, optimistic concurrency control, transaction control statements, and Document API fully supported.
 
 ## License
 

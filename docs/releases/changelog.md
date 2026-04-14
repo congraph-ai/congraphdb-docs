@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.12] - 2026-04-12
+
+### Added
+- **Hybrid Deletion Detection** - Improved accuracy in identifying deleted entities by distinguishing between empty properties and deleted rows
+- **OptionalMatch Refinements** - Optimized streaming logic for `OPTIONAL MATCH` to ensure correct propagation of unmatched rows with `NULL` values
+- **Eager Mutation Execution** - Standardized query executor to use eager execution for mutation queries while maintaining streaming for read-only operations
+
+### Fixed
+- **Cardinality Regressions** - Resolved issues in query planning and execution that led to incorrect result counts in complex join scenarios
+- **NapiResult Unwrapping** - Standardized asynchronous API handling across service layers to resolve integration bottlenecks
+
+### Changed
+- **Test Suite Stabilization** - Finalized Rust and TypeScript test suites to ensure 100% stability across all core modules
+
 ## [0.1.11] - 2026-04-10
 
 ### Added
