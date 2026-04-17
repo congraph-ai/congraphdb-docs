@@ -4,14 +4,13 @@
 
 CongraphDB is an embedded, serverless graph database designed for local-first applications. Built with Rust for memory safety and extreme performance, it provides a native Node.js bindings layer via napi-rs.
 
-## What's New in v0.1.12
+## What's New in v0.1.13
 
-- **Hybrid Deletion Detection** — Improved accuracy in identifying deleted entities by distinguishing between empty properties and deleted rows
-- **OptionalMatch Refinements** — Optimized streaming logic for `OPTIONAL MATCH` to ensure correct propagation of unmatched rows with `NULL` values
-- **Eager Mutation Execution** — Standardized query executor to use eager execution for mutation queries while maintaining streaming for read-only operations
-- **Cardinality Regressions** — Resolved issues in query planning and execution that led to incorrect result counts
-- **NapiResult Unwrapping** — Standardized asynchronous API handling across service layers
-- **WAL Durability** — Enhanced crash recovery and undo logging stability
+- **HNSW Vector Index Support** — Complete vector index support with filtering, persistence, query optimization, and JS bindings
+- **Multi-Table Graph Traversal** — Shortest path and evaluator enhancements for multi-table queries
+- **Type Function & HasLabel** — Added `HasLabel` expression support and `Type` function
+- **Inner Product Metric** — Refined distance metric implementation for vector search
+- **Windows Persistence** — Improved recovery, relationship handling, and Windows persistence issues
 
 See the [Changelog](releases/changelog.md) for full release notes.
 
@@ -83,7 +82,7 @@ db.close();
 
 ## Status
 
-CongraphDB is currently in **alpha** development (v0.1.12). The core storage engine, transaction system, and a robust Cypher/JavaScript query interface are implemented, with features like graph algorithms, optimistic concurrency control, transaction control statements, and Document API fully supported.
+CongraphDB is currently in **alpha** development (v0.1.13). The core storage engine, transaction system, and a robust Cypher/JavaScript query interface are implemented, with features like graph algorithms, optimistic concurrency control, transaction control statements, and Document API fully supported.
 
 ## License
 

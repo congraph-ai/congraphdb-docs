@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.13] - 2026-04-17
+
+### Added
+- **HNSW Vector Index Support** - Complete vector index support with filtering, persistence, query optimization, and JS bindings
+- **Multi-Table Graph Traversal** - Shortest path and evaluator enhancements for multi-table queries
+- **Type Function & HasLabel** - Added `HasLabel` expression support and `Type` function
+- **Inner Product Metric** - Refined distance metric implementation for vector search
+
+### Fixed
+- **Windows Persistence** - Improved recovery, relationship handling, and Windows persistence issues
+
+### Changed
+- **Type Exports** - Cleaned up type exports and formatting
+- Improved table persistence mechanisms
+
 ## [0.1.12] - 2026-04-12
 
 ### Added
